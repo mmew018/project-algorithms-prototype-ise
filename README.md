@@ -3,6 +3,10 @@
 > **ระบบค้นหาและจัดอันดับสินค้าคอมพิวเตอร์และไอทีอัจฉริยะ**  
 > เข้าใจความต้องการภาษาธรรมชาติ (Natural-Language Requirements) • คัดกรองด้วย Inverted Index • คำนวณคะแนนตัดสินใจด้วย Multi-Criteria Weighted Ranking • อธิบายเหตุผลของคำแนะนำได้อย่างโปร่งใส
 
+🌐 **ทดลองใช้งานระบบจริง (Live Demo):**  
+👉 **[https://project-algorithms-prototype-ise.vercel.app/](https://project-algorithms-prototype-ise.vercel.app/)**
+
+[![Live Demo](https://img.shields.io/badge/Live%20Demo-Vercel-black?style=for-the-badge&logo=vercel)](https://project-algorithms-prototype-ise.vercel.app/)
 [![University Capstone](https://img.shields.io/badge/Project-University%20Capstone-blue.svg)](#)
 [![Precision@3](https://img.shields.io/badge/Precision%403-0.944-brightgreen.svg)](#)
 [![MRR](https://img.shields.io/badge/MRR-1.000-brightgreen.svg)](#)
@@ -115,10 +119,14 @@ ISE/
 
 ## 7. วิธีการเปิดใช้งาน (Quick Start)
 
-### วิธีที่ 1: ดับเบิลคลิกเปิดได้ทันที
+### วิธีที่ 1: เข้าใช้งานผ่านเว็บจริงทันที (Live Demo on Vercel - แนะนำที่สุด 🌟)
+- เข้าใช้งานได้ทันทีทั้งบนคอมพิวเตอร์, iPad และมือถือ โดยไม่ต้องติดตั้งโปรแกรมใดๆ:  
+  👉 **[https://project-algorithms-prototype-ise.vercel.app/](https://project-algorithms-prototype-ise.vercel.app/)**
+
+### วิธีที่ 2: ดับเบิลคลิกเปิดไฟล์ในเครื่อง
 - ดับเบิลคลิกที่ไฟล์ `index.html` เพื่อเปิดใช้งานบน Chrome, Edge, Safari หรือ Firefox ได้ทันที
 
-### วิธีที่ 2: รันผ่าน Local Web Server (แนะนำ)
+### วิธีที่ 3: รันผ่าน Local Web Server
 ```bash
 # ใช้ Python (มีติดเครื่องอยู่แล้ว)
 python -m http.server 8000
@@ -128,7 +136,7 @@ npx serve .
 ```
 เปิดเบราว์เซอร์ไปที่: `http://localhost:8000`
 
-### วิธีที่ 3: รันการทดสอบ Benchmark ผ่าน Terminal
+### วิธีที่ 4: รันการทดสอบ Benchmark ผ่าน Terminal
 ```bash
 node -e "
 const { ISE_PRODUCTS } = require('./data/products.js');
