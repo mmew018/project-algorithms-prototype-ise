@@ -1,0 +1,189 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 920 440" width="100%" height="100%">
+  <defs>
+    <linearGradient id="pipeBg" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="100%" stop-color="#f8fafc"/>
+    </linearGradient>
+    <linearGradient id="nodeGrad1" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#3b82f6"/>
+      <stop offset="100%" stop-color="#1d4ed8"/>
+    </linearGradient>
+    <linearGradient id="nodeGrad2" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0284c7"/>
+      <stop offset="100%" stop-color="#0369a1"/>
+    </linearGradient>
+    <linearGradient id="nodeGrad3" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#8b5cf6"/>
+      <stop offset="100%" stop-color="#6d28d9"/>
+    </linearGradient>
+    <linearGradient id="nodeGrad4" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#10b981"/>
+      <stop offset="100%" stop-color="#047857"/>
+    </linearGradient>
+    <linearGradient id="nodeGrad5" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f59e0b"/>
+      <stop offset="100%" stop-color="#d97706"/>
+    </linearGradient>
+    <filter id="boxShadow" x="-5%" y="-5%" width="110%" height="115%">
+      <feDropShadow dx="0" dy="4" stdDeviation="5" flood-color="#0f172a" flood-opacity="0.08"/>
+    </filter>
+  </defs>
+
+  <!-- Background Canvas -->
+  <rect width="920" height="440" fill="url(#pipeBg)" rx="16"/>
+  <rect width="920" height="440" fill="none" stroke="#e2e8f0" stroke-width="2" rx="16"/>
+
+  <!-- Title Header -->
+  <text x="460" y="42" text-anchor="middle" fill="#0f172a" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="20" font-weight="800">
+    สถาปัตยกรรมขั้นตอนการทำงานทั้งระบบ (End-to-End Pipeline)
+  </text>
+  <text x="460" y="65" text-anchor="middle" fill="#64748b" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="12">
+    5 ขั้นตอนสำคัญที่เปลี่ยนภาษาพูดของผู้ใช้ ให้กลายเป็นผลลัพธ์ที่แม่นยำและอธิบายเหตุผลได้จริง
+  </text>
+
+  <!-- 5 Nodes Layout -->
+
+  <!-- Node 1: User Input -->
+  <g transform="translate(25, 95)">
+    <rect width="155" height="290" rx="12" fill="#ffffff" stroke="#e2e8f0" stroke-width="1.5" filter="url(#boxShadow)"/>
+    <rect width="155" height="42" rx="12" fill="url(#nodeGrad1)"/>
+    <rect y="30" width="155" height="12" fill="#1d4ed8"/>
+    <text x="77" y="27" text-anchor="middle" fill="#ffffff" font-family="sans-serif" font-size="13" font-weight="bold">1. USER QUERY</text>
+
+    <!-- Icon -->
+    <circle cx="77" cy="75" r="22" fill="#eff6ff"/>
+    <text x="77" y="82" text-anchor="middle" font-size="18">💬</text>
+
+    <!-- Content -->
+    <text x="77" y="118" text-anchor="middle" fill="#0f172a" font-family="sans-serif" font-size="12" font-weight="bold">ข้อความภาษาคน</text>
+    <rect x="12" y="132" width="131" height="70" rx="6" fill="#f8fafc" stroke="#e2e8f0"/>
+    <text x="77" y="152" text-anchor="middle" fill="#2563eb" font-family="sans-serif" font-size="10" font-weight="bold">"Gaming Laptop</text>
+    <text x="77" y="168" text-anchor="middle" fill="#2563eb" font-family="sans-serif" font-size="10" font-weight="bold">RTX 4060</text>
+    <text x="77" y="184" text-anchor="middle" fill="#2563eb" font-family="sans-serif" font-size="10" font-weight="bold">งบไม่เกิน 40000"</text>
+
+    <text x="77" y="235" text-anchor="middle" fill="#64748b" font-family="sans-serif" font-size="10">รองรับภาษาไทย +</text>
+    <text x="77" y="250" text-anchor="middle" fill="#64748b" font-family="sans-serif" font-size="10">ศัพท์เทคนิคไอที</text>
+  </g>
+
+  <!-- Arrow 1 -> 2 -->
+  <path d="M 185 240 L 205 240" stroke="#94a3b8" stroke-width="3" stroke-linecap="round"/>
+  <polygon points="205,235 215,240 205,245" fill="#94a3b8"/>
+
+  <!-- Node 2: Query Understanding -->
+  <g transform="translate(205, 95)">
+    <rect width="155" height="290" rx="12" fill="#ffffff" stroke="#e2e8f0" stroke-width="1.5" filter="url(#boxShadow)"/>
+    <rect width="155" height="42" rx="12" fill="url(#nodeGrad2)"/>
+    <rect y="30" width="155" height="12" fill="#0369a1"/>
+    <text x="77" y="27" text-anchor="middle" fill="#ffffff" font-family="sans-serif" font-size="12" font-weight="bold">2. UNDERSTAND</text>
+
+    <!-- Icon -->
+    <circle cx="77" cy="75" r="22" fill="#f0f9ff"/>
+    <text x="77" y="82" text-anchor="middle" font-size="18">🧠</text>
+
+    <!-- Content -->
+    <text x="77" y="118" text-anchor="middle" fill="#0f172a" font-family="sans-serif" font-size="12" font-weight="bold">สกัดโครงสร้าง (NLP)</text>
+
+    <!-- Chips -->
+    <rect x="12" y="132" width="131" height="22" rx="4" fill="#e0f2fe"/>
+    <text x="77" y="147" text-anchor="middle" fill="#0369a1" font-family="sans-serif" font-size="9" font-weight="bold">Type: Gaming Laptop</text>
+
+    <rect x="12" y="158" width="131" height="22" rx="4" fill="#e0f2fe"/>
+    <text x="77" y="173" text-anchor="middle" fill="#0369a1" font-family="sans-serif" font-size="9" font-weight="bold">GPU: RTX 4060</text>
+
+    <rect x="12" y="184" width="131" height="22" rx="4" fill="#ecfdf5"/>
+    <text x="77" y="199" text-anchor="middle" fill="#065f46" font-family="sans-serif" font-size="9" font-weight="bold">Budget: ≤ ฿40,000</text>
+
+    <rect x="12" y="210" width="131" height="22" rx="4" fill="#fef3c7"/>
+    <text x="77" y="225" text-anchor="middle" fill="#92400e" font-family="sans-serif" font-size="9" font-weight="bold">Goal: Gaming</text>
+
+    <text x="77" y="258" text-anchor="middle" fill="#64748b" font-family="sans-serif" font-size="10">Rule-Based Parser</text>
+    <text x="77" y="272" text-anchor="middle" fill="#64748b" font-family="sans-serif" font-size="9">(ไม่ใช้ External LLM)</text>
+  </g>
+
+  <!-- Arrow 2 -> 3 -->
+  <path d="M 365 240 L 385 240" stroke="#94a3b8" stroke-width="3" stroke-linecap="round"/>
+  <polygon points="385,235 395,240 385,245" fill="#94a3b8"/>
+
+  <!-- Node 3: Candidate Retrieval -->
+  <g transform="translate(385, 95)">
+    <rect width="155" height="290" rx="12" fill="#ffffff" stroke="#e2e8f0" stroke-width="1.5" filter="url(#boxShadow)"/>
+    <rect width="155" height="42" rx="12" fill="url(#nodeGrad3)"/>
+    <rect y="30" width="155" height="12" fill="#6d28d9"/>
+    <text x="77" y="27" text-anchor="middle" fill="#ffffff" font-family="sans-serif" font-size="13" font-weight="bold">3. RETRIEVAL</text>
+
+    <!-- Icon -->
+    <circle cx="77" cy="75" r="22" fill="#f5f3ff"/>
+    <text x="77" y="82" text-anchor="middle" font-size="18">⚡</text>
+
+    <!-- Content -->
+    <text x="77" y="118" text-anchor="middle" fill="#0f172a" font-family="sans-serif" font-size="12" font-weight="bold">คัดกรองด่วน</text>
+
+    <rect x="12" y="132" width="131" height="98" rx="6" fill="#f8fafc" stroke="#e2e8f0"/>
+    <text x="20" y="152" fill="#0f172a" font-family="sans-serif" font-size="10" font-weight="bold">Inverted Index:</text>
+    <text x="20" y="170" fill="#64748b" font-family="sans-serif" font-size="9">• กรองเฉพาะ Gaming</text>
+    <text x="20" y="186" fill="#64748b" font-family="sans-serif" font-size="9">• ดึงเฉพาะรุ่น RTX 4060</text>
+    <text x="20" y="202" fill="#64748b" font-family="sans-serif" font-size="9">• Soft Window (+15%)</text>
+    <text x="20" y="218" fill="#10b981" font-family="sans-serif" font-size="9" font-weight="bold">  เหลือ 4 รุ่นเข้าชิง</text>
+
+    <text x="77" y="258" text-anchor="middle" fill="#64748b" font-family="sans-serif" font-size="10">ตัดหมวดอื่นทิ้ง</text>
+    <text x="77" y="272" text-anchor="middle" fill="#64748b" font-family="sans-serif" font-size="10">ประหยัดเวลาคำนวณ</text>
+  </g>
+
+  <!-- Arrow 3 -> 4 -->
+  <path d="M 545 240 L 565 240" stroke="#94a3b8" stroke-width="3" stroke-linecap="round"/>
+  <polygon points="565,235 575,240 565,245" fill="#94a3b8"/>
+
+  <!-- Node 4: Multi-Criteria Ranking -->
+  <g transform="translate(565, 95)">
+    <rect width="155" height="290" rx="12" fill="#ffffff" stroke="#e2e8f0" stroke-width="1.5" filter="url(#boxShadow)"/>
+    <rect width="155" height="42" rx="12" fill="url(#nodeGrad4)"/>
+    <rect y="30" width="155" height="12" fill="#047857"/>
+    <text x="77" y="27" text-anchor="middle" fill="#ffffff" font-family="sans-serif" font-size="13" font-weight="bold">4. RANKING</text>
+
+    <!-- Icon -->
+    <circle cx="77" cy="75" r="22" fill="#ecfdf5"/>
+    <text x="77" y="82" text-anchor="middle" font-size="18">⚖️</text>
+
+    <!-- Content -->
+    <text x="77" y="118" text-anchor="middle" fill="#0f172a" font-family="sans-serif" font-size="12" font-weight="bold">คำนวณ 4 มิติ</text>
+
+    <rect x="12" y="132" width="131" height="98" rx="6" fill="#f8fafc" stroke="#e2e8f0"/>
+    <text x="20" y="152" fill="#2563eb" font-family="sans-serif" font-size="9" font-weight="bold">Relevance: 30%</text>
+    <text x="20" y="170" fill="#059669" font-family="sans-serif" font-size="9" font-weight="bold">Budget: 25%</text>
+    <text x="20" y="188" fill="#0284c7" font-family="sans-serif" font-size="9" font-weight="bold">Specs: 25%</text>
+    <text x="20" y="206" fill="#d97706" font-family="sans-serif" font-size="9" font-weight="bold">Use Case: 20%</text>
+    <text x="20" y="222" fill="#0f172a" font-family="sans-serif" font-size="9" font-weight="bold">──> Match Score</text>
+
+    <text x="77" y="258" text-anchor="middle" fill="#64748b" font-family="sans-serif" font-size="10">สูตรคณิตศาสตร์จริง</text>
+    <text x="77" y="272" text-anchor="middle" fill="#64748b" font-family="sans-serif" font-size="10">ไม่มีสุ่มตัวเลข</text>
+  </g>
+
+  <!-- Arrow 4 -> 5 -->
+  <path d="M 725 240 L 745 240" stroke="#94a3b8" stroke-width="3" stroke-linecap="round"/>
+  <polygon points="745,235 755,240 745,245" fill="#94a3b8"/>
+
+  <!-- Node 5: Explain & Present -->
+  <g transform="translate(745, 95)">
+    <rect width="150" height="290" rx="12" fill="#ffffff" stroke="#e2e8f0" stroke-width="1.5" filter="url(#boxShadow)"/>
+    <rect width="150" height="42" rx="12" fill="url(#nodeGrad5)"/>
+    <rect y="30" width="150" height="12" fill="#d97706"/>
+    <text x="75" y="27" text-anchor="middle" fill="#ffffff" font-family="sans-serif" font-size="13" font-weight="bold">5. EXPLAIN</text>
+
+    <!-- Icon -->
+    <circle cx="75" cy="75" r="22" fill="#fffbeb"/>
+    <text x="75" y="82" text-anchor="middle" font-size="18">🏆</text>
+
+    <!-- Content -->
+    <text x="75" y="118" text-anchor="middle" fill="#0f172a" font-family="sans-serif" font-size="12" font-weight="bold">คำแนะนำโปร่งใส</text>
+
+    <rect x="10" y="132" width="130" height="98" rx="6" fill="#fef3c7" stroke="#fde68a"/>
+    <text x="75" y="152" text-anchor="middle" fill="#92400e" font-family="sans-serif" font-size="10" font-weight="bold">#1 Lenovo LOQ 15</text>
+    <text x="75" y="170" text-anchor="middle" fill="#b45309" font-family="sans-serif" font-size="12" font-weight="bold">98 / 100</text>
+    <text x="75" y="190" text-anchor="middle" fill="#78350f" font-family="sans-serif" font-size="9">บอกเหตุผลภาษาไทย</text>
+    <text x="75" y="206" text-anchor="middle" fill="#78350f" font-family="sans-serif" font-size="9">+ ตารางเทียบสเปก</text>
+    <text x="75" y="222" text-anchor="middle" fill="#78350f" font-family="sans-serif" font-size="9">+ ไฮไลต์จุดต่าง</text>
+
+    <text x="75" y="258" text-anchor="middle" fill="#64748b" font-family="sans-serif" font-size="10">ช่วยตัดสินใจซื้อ</text>
+    <text x="75" y="272" text-anchor="middle" fill="#64748b" font-family="sans-serif" font-size="10">อย่างมั่นใจ</text>
+  </g>
+</svg>

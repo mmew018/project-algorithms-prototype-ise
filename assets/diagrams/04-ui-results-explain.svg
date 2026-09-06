@@ -1,0 +1,131 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 480" width="100%" height="100%">
+  <defs>
+    <linearGradient id="uiBg" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="100%" stop-color="#f8fafc"/>
+    </linearGradient>
+    <linearGradient id="heroBadge" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#2563eb"/>
+      <stop offset="100%" stop-color="#0284c7"/>
+    </linearGradient>
+    <filter id="cardSh" x="-5%" y="-5%" width="110%" height="115%">
+      <feDropShadow dx="0" dy="4" stdDeviation="6" flood-color="#0f172a" flood-opacity="0.1"/>
+    </filter>
+  </defs>
+
+  <!-- Background Canvas -->
+  <rect width="900" height="480" fill="url(#uiBg)" rx="16"/>
+  <rect width="900" height="480" fill="none" stroke="#e2e8f0" stroke-width="2" rx="16"/>
+
+  <!-- Header -->
+  <text x="450" y="38" text-anchor="middle" fill="#0f172a" font-family="-apple-system, sans-serif" font-size="20" font-weight="800">
+    หน้าตาผลลัพธ์และการอธิบายเหตุผล (Explainable UI Showcase)
+  </text>
+  <text x="450" y="58" text-anchor="middle" fill="#64748b" font-family="-apple-system, sans-serif" font-size="12">
+    แสดงข้อมูลสเปกแน่นระดับ NotebookSPEC พร้อมแจกแจงคะแนนและคำอธิบายที่ตรวจสอบได้
+  </text>
+
+  <!-- Card 1: Intent Card (เราเข้าใจความต้องการของคุณ) -->
+  <g transform="translate(40, 80)">
+    <rect width="820" height="60" rx="8" fill="#ffffff" stroke="#bfdbfe" stroke-width="1.5" stroke-dasharray="0" filter="url(#cardSh)"/>
+    <rect width="4" height="60" rx="2" fill="#2563eb"/>
+    <text x="25" y="24" fill="#0f172a" font-family="sans-serif" font-size="12" font-weight="bold">🎯 เราเข้าใจความต้องการของคุณ (Interpreted Intent):</text>
+    <rect x="25" y="32" width="130" height="20" rx="4" fill="#eff6ff"/>
+    <text x="90" y="46" text-anchor="middle" fill="#1d4ed8" font-family="sans-serif" font-size="9" font-weight="bold">📁 Gaming Laptop</text>
+    
+    <rect x="165" y="32" width="115" height="20" rx="4" fill="#ecfdf5"/>
+    <text x="222" y="46" text-anchor="middle" fill="#065f46" font-family="sans-serif" font-size="9" font-weight="bold">💰 งบ: ≤ ฿40,000</text>
+
+    <rect x="290" y="32" width="115" height="20" rx="4" fill="#f0f9ff"/>
+    <text x="347" y="46" text-anchor="middle" fill="#0369a1" font-family="sans-serif" font-size="9" font-weight="bold">🎮 GPU: RTX 4060</text>
+
+    <rect x="415" y="32" width="115" height="20" rx="4" fill="#fef3c7"/>
+    <text x="472" y="46" text-anchor="middle" fill="#92400e" font-family="sans-serif" font-size="9" font-weight="bold">🎯 ใช้เล่นเกม</text>
+
+    <text x="795" y="37" text-anchor="end" fill="#64748b" font-family="monospace" font-size="10">คำนวณใน 2.55 ms</text>
+  </g>
+
+  <!-- Card 2: Best Match Product Card Mockup -->
+  <g transform="translate(40, 155)">
+    <rect width="820" height="195" rx="12" fill="#ffffff" stroke="#2563eb" stroke-width="2" filter="url(#cardSh)"/>
+    
+    <!-- Hero Badge on top left -->
+    <rect x="20" y="-12" width="220" height="24" rx="12" fill="url(#heroBadge)"/>
+    <text x="130" y="4" text-anchor="middle" fill="#ffffff" font-family="sans-serif" font-size="10" font-weight="bold">
+      ★ BEST MATCH — ตรงกับคุณมากที่สุด
+    </text>
+
+    <!-- Thumbnail Mockup -->
+    <rect x="20" y="28" width="120" height="110" rx="6" fill="#f1f5f9" stroke="#e2e8f0"/>
+    <text x="80" y="85" text-anchor="middle" font-size="36">💻</text>
+    <rect x="30" y="35" width="45" height="14" rx="2" fill="#ffffff" stroke="#cbd5e1"/>
+    <text x="52" y="45" text-anchor="middle" fill="#475569" font-family="sans-serif" font-size="8" font-weight="bold">Lenovo</text>
+
+    <!-- Middle Info -->
+    <g transform="translate(160, 30)">
+      <text x="0" y="10" fill="#2563eb" font-family="sans-serif" font-size="10" font-weight="bold">GAMING LAPTOP • HIGH-VALUE GAMING</text>
+      <text x="0" y="30" fill="#0f172a" font-family="sans-serif" font-size="15" font-weight="bold">Lenovo LOQ 15IRX9 (83DV003DTA)</text>
+      
+      <!-- Spec Chips -->
+      <g transform="translate(0, 42)">
+        <rect width="115" height="20" rx="3" fill="#eff6ff" stroke="#bfdbfe"/>
+        <text x="57" y="14" text-anchor="middle" fill="#1e40af" font-family="sans-serif" font-size="9">⚙️ i5-13450HX 10C</text>
+
+        <rect x="122" width="120" height="20" rx="3" fill="#eff6ff" stroke="#bfdbfe"/>
+        <text x="182" y="14" text-anchor="middle" fill="#1e40af" font-family="sans-serif" font-size="9">🎮 RTX 4060 105W</text>
+
+        <rect x="248" width="80" height="20" rx="3" fill="#f1f5f9" stroke="#e2e8f0"/>
+        <text x="288" y="14" text-anchor="middle" fill="#475569" font-family="sans-serif" font-size="9">RAM 16GB</text>
+
+        <rect x="334" width="80" height="20" rx="3" fill="#f1f5f9" stroke="#e2e8f0"/>
+        <text x="374" y="14" text-anchor="middle" fill="#475569" font-family="sans-serif" font-size="9">SSD 512GB</text>
+
+        <rect x="420" width="85" height="20" rx="3" fill="#f1f5f9" stroke="#e2e8f0"/>
+        <text x="462" y="14" text-anchor="middle" fill="#475569" font-family="sans-serif" font-size="9">144Hz 100% sRGB</text>
+      </g>
+
+      <!-- Why This Result (Rationale Box) -->
+      <rect x="0" y="72" width="505" height="42" rx="4" fill="#f0fdf4" stroke="#86efac"/>
+      <text x="10" y="88" fill="#166534" font-family="sans-serif" font-size="10" font-weight="bold">ทำไมระบบจึงแนะนำ:</text>
+      <text x="10" y="104" fill="#15803d" font-family="sans-serif" font-size="9">
+        อยู่ในงบประมาณ (฿37,900), ใช้ RTX 4060 วัตต์สูง 105W, จอสีตรง 100% sRGB เล่นเกมลื่นไหล
+      </text>
+    </g>
+
+    <!-- Right Column: Score & Price -->
+    <line x1="685" y1="20" x2="685" y2="180" stroke="#f1f5f9" stroke-width="1.5"/>
+    <g transform="translate(700, 30)">
+      <text x="100" y="12" text-anchor="end" fill="#64748b" font-family="sans-serif" font-size="9" font-weight="bold">คะแนนความเหมาะสม</text>
+      <text x="75" y="42" text-anchor="end" fill="#10b981" font-family="'JetBrains Mono', monospace" font-size="34" font-weight="800">98</text>
+      <text x="100" y="40" text-anchor="end" fill="#94a3b8" font-family="sans-serif" font-size="11">/100</text>
+
+      <!-- Mini Breakdown -->
+      <rect x="0" y="52" width="105" height="34" rx="4" fill="#f8fafc" stroke="#e2e8f0"/>
+      <text x="8" y="66" fill="#64748b" font-family="sans-serif" font-size="8">คำค้น: 100 | งบ: 100</text>
+      <text x="8" y="78" fill="#64748b" font-family="sans-serif" font-size="8">สเปก: 100 | งาน: 92</text>
+
+      <text x="100" y="112" text-anchor="end" fill="#0f172a" font-family="'JetBrains Mono', monospace" font-size="18" font-weight="800">฿37,900</text>
+      
+      <!-- CTA Button -->
+      <rect x="0" y="122" width="105" height="26" rx="4" fill="#2563eb"/>
+      <text x="52" y="139" text-anchor="middle" fill="#ffffff" font-family="sans-serif" font-size="9" font-weight="bold">ดูสเปกฉบับเต็ม</text>
+    </g>
+  </g>
+
+  <!-- Comparison Feature Callout Banner -->
+  <g transform="translate(40, 365)">
+    <rect width="820" height="90" rx="8" fill="#ffffff" stroke="#e2e8f0" stroke-width="1" filter="url(#cardSh)"/>
+    <circle cx="45" cy="45" r="22" fill="#fef3c7"/>
+    <text x="45" y="52" text-anchor="middle" font-size="18">⚖️</text>
+    
+    <text x="80" y="35" fill="#0f172a" font-family="sans-serif" font-size="13" font-weight="bold">
+      ระบบเปรียบเทียบสเปกเคียงข้างกันได้สูงสุด 3 รุ่น (Side-by-Side Comparison)
+    </text>
+    <text x="80" y="54" fill="#64748b" font-family="sans-serif" font-size="11">
+      พร้อมปุ่มกด <tspan fill="#d97706" font-weight="bold">"🔍 ไฮไลต์จุดต่างของสเปก"</tspan> เพื่อดูชัดเจนทันทีว่าตัวไหนให้ RAM เยอะกว่า หรือ CPU แรงกว่า
+    </text>
+    <text x="80" y="72" fill="#2563eb" font-family="sans-serif" font-size="10" font-weight="bold">
+      เปิดตารางเทียบสเปกได้จาก Dock ด้านล่างของหน้าจอ
+    </text>
+  </g>
+</svg>
