@@ -92,6 +92,7 @@
     // Sidebar Filters
     filterSidebar: document.getElementById('filterSidebar'),
     filterResetBtn: document.getElementById('filterResetBtn'),
+    filterCloseBtn: document.getElementById('filterCloseBtn'),
     filterPriceMin: document.getElementById('filterPriceMin'),
     filterPriceMax: document.getElementById('filterPriceMax'),
     filterBrandList: document.getElementById('filterBrandList'),
@@ -979,6 +980,12 @@
     DOM.mobileFilterTrigger.addEventListener('click', () => {
       DOM.filterSidebar.classList.toggle('mobile-open');
     });
+
+    if (DOM.filterCloseBtn) {
+      DOM.filterCloseBtn.addEventListener('click', () => {
+        DOM.filterSidebar.classList.remove('mobile-open');
+      });
+    }
 
     // Product Grid Card Actions (Delegation)
     DOM.productGrid.addEventListener('click', e => {
