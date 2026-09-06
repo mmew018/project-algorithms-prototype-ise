@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300" width="100%" height="100%">
+  <defs>
+    <linearGradient id="monitorScreen" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0284c7" />
+      <stop offset="50%" stop-color="#2563eb" />
+      <stop offset="100%" stop-color="#1e1b4b" />
+    </linearGradient>
+  </defs>
+  <rect width="400" height="300" fill="#f8fafc" rx="8"/>
+  <g transform="translate(60, 40)">
+    <!-- Monitor Bezel & Panel -->
+    <rect x="10" y="5" width="260" height="155" rx="5" fill="#0f172a" stroke="#334155" stroke-width="2"/>
+    <rect x="14" y="9" width="252" height="142" rx="2" fill="url(#monitorScreen)"/>
+    <!-- Graphic on display (Gaming / Fast refresh rate curve) -->
+    <path d="M 25 120 Q 90 40 140 85 T 250 40" fill="none" stroke="#38bdf8" stroke-width="3" opacity="0.8"/>
+    <text x="140" y="70" text-anchor="middle" fill="#ffffff" font-family="-apple-system, sans-serif" font-size="14" font-weight="bold">27" 144Hz - 240Hz IPS</text>
+    <text x="140" y="90" text-anchor="middle" fill="#93c5fd" font-family="monospace" font-size="10">1ms MPRT / QHD 1440p</text>
+    <!-- Stand Neck -->
+    <polygon points="130,160 150,160 155,205 125,205" fill="#475569"/>
+    <!-- Stand Base (V-shaped or hexagonal) -->
+    <polygon points="140,202 80,218 95,221 140,208 185,221 200,218" fill="#1e293b"/>
+    <!-- Shadow -->
+    <ellipse cx="140" cy="225" rx="75" ry="5" fill="#0f172a" opacity="0.16"/>
+  </g>
+  <text x="200" y="275" text-anchor="middle" fill="#1d4ed8" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="13" font-weight="700" letter-spacing="1">MONITOR / GAMING DISPLAY</text>
+</svg>

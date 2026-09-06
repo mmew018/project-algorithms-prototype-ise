@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300" width="100%" height="100%">
+  <defs>
+    <linearGradient id="ssdHeatsink" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0f172a" />
+      <stop offset="100%" stop-color="#1e293b" />
+    </linearGradient>
+  </defs>
+  <rect width="400" height="300" fill="#f8fafc" rx="8"/>
+  <g transform="translate(65, 100)">
+    <!-- M.2 PCB Board -->
+    <rect x="0" y="0" width="270" height="75" rx="3" fill="#022c22" stroke="#065f46" stroke-width="1.5"/>
+    <!-- M.2 Standoff Semicircle Cutout -->
+    <path d="M 0 30 A 8 8 0 0 1 0 45 Z" fill="#f8fafc"/>
+    <!-- Graphene Heatsink / Label Cover -->
+    <rect x="18" y="5" width="220" height="65" rx="2" fill="url(#ssdHeatsink)" stroke="#334155" stroke-width="1"/>
+    <!-- Gold M.2 Pins / Keying Notch -->
+    <rect x="250" y="8" width="18" height="22" fill="#eab308"/>
+    <rect x="250" y="32" width="18" height="6" fill="#022c22"/> <!-- M Key Notch -->
+    <rect x="250" y="40" width="18" height="26" fill="#eab308"/>
+    <!-- Tech text on heatsink -->
+    <text x="35" y="32" fill="#38bdf8" font-family="-apple-system, sans-serif" font-size="12" font-weight="bold">PCIe 4.0 NVMe M.2 SSD</text>
+    <text x="35" y="48" fill="#e2e8f0" font-family="monospace" font-size="10">READ 7,400 MB/s | WRITE 6,800 MB/s</text>
+    <text x="35" y="60" fill="#94a3b8" font-family="monospace" font-size="9">3D TLC NAND / DRAM CACHE</text>
+    <!-- Capacity badge -->
+    <rect x="185" y="16" width="45" height="42" rx="3" fill="#0284c7"/>
+    <text x="207" y="37" text-anchor="middle" fill="#ffffff" font-family="-apple-system, sans-serif" font-size="13" font-weight="bold">1TB</text>
+    <text x="207" y="50" text-anchor="middle" fill="#bae6fd" font-family="-apple-system, sans-serif" font-size="8">GEN4</text>
+    <!-- Shadow -->
+    <ellipse cx="135" cy="90" rx="125" ry="5" fill="#0f172a" opacity="0.12"/>
+  </g>
+  <text x="200" y="265" text-anchor="middle" fill="#0369a1" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="13" font-weight="700" letter-spacing="1">SOLID STATE DRIVE (M.2 NVMe SSD)</text>
+</svg>

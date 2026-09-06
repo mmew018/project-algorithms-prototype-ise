@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300" width="100%" height="100%">
+  <defs>
+    <linearGradient id="chassisCase" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1e293b" />
+      <stop offset="100%" stop-color="#0f172a" />
+    </linearGradient>
+    <linearGradient id="glassSide" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1e1b4b" stop-opacity="0.8" />
+      <stop offset="100%" stop-color="#0284c7" stop-opacity="0.2" />
+    </linearGradient>
+  </defs>
+  <rect width="400" height="300" fill="#f8fafc" rx="8"/>
+  <g transform="translate(130, 35)">
+    <!-- Main Tower Case -->
+    <rect x="0" y="0" width="140" height="205" rx="6" fill="url(#chassisCase)" stroke="#334155" stroke-width="2"/>
+    <!-- Front Panel Mesh -->
+    <rect x="5" y="8" width="15" height="190" rx="2" fill="#090d16"/>
+    <!-- Power Button & Front I/O -->
+    <circle cx="12" cy="18" r="2.5" fill="#38bdf8"/>
+    <rect x="10" y="26" width="4" height="6" rx="1" fill="#64748b"/>
+    <!-- Tempered Glass Window -->
+    <rect x="25" y="8" width="110" height="175" rx="3" fill="url(#glassSide)" stroke="#475569" stroke-width="1"/>
+    <!-- Inside: AIO Cooler with RGB -->
+    <circle cx="80" cy="55" r="18" fill="#0f172a" stroke="#8b5cf6" stroke-width="3"/>
+    <circle cx="80" cy="55" r="10" fill="#3b82f6"/>
+    <!-- Inside: GPU visible through glass -->
+    <rect x="35" y="105" width="95" height="24" rx="2" fill="#1e293b" stroke="#10b981" stroke-width="1.5"/>
+    <text x="82" y="121" text-anchor="middle" fill="#34d399" font-family="monospace" font-size="8" font-weight="bold">GEFORCE RTX</text>
+    <!-- PSU Shroud at bottom -->
+    <rect x="5" y="185" width="130" height="18" fill="#090d16"/>
+    <!-- Case Feet -->
+    <rect x="10" y="205" width="20" height="6" rx="1" fill="#334155"/>
+    <rect x="110" y="205" width="20" height="6" rx="1" fill="#334155"/>
+    <!-- Shadow -->
+    <ellipse cx="70" cy="216" rx="65" ry="6" fill="#0f172a" opacity="0.16"/>
+  </g>
+  <text x="200" y="275" text-anchor="middle" fill="#334155" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="13" font-weight="700" letter-spacing="1">DESKTOP PC / WORKSTATION</text>
+</svg>

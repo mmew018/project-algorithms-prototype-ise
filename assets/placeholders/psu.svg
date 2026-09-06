@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300" width="100%" height="100%">
+  <defs>
+    <linearGradient id="psuBody" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1e293b" />
+      <stop offset="100%" stop-color="#090d16" />
+    </linearGradient>
+  </defs>
+  <rect width="400" height="300" fill="#f8fafc" rx="8"/>
+  <g transform="translate(90, 60)">
+    <!-- PSU Enclosure -->
+    <rect x="0" y="0" width="220" height="140" rx="6" fill="url(#psuBody)" stroke="#334155" stroke-width="2"/>
+    <!-- Large 120mm/140mm Fan Grill -->
+    <circle cx="80" cy="70" r="50" fill="#0f172a" stroke="#475569" stroke-width="2"/>
+    <circle cx="80" cy="70" r="40" fill="none" stroke="#334155" stroke-width="1.5"/>
+    <circle cx="80" cy="70" r="28" fill="none" stroke="#334155" stroke-width="1.5"/>
+    <circle cx="80" cy="70" r="16" fill="none" stroke="#334155" stroke-width="1.5"/>
+    <circle cx="80" cy="70" r="8" fill="#eab308"/>
+    <!-- Modular Cable Sockets Area on the right -->
+    <rect x="150" y="20" width="55" height="100" rx="3" fill="#0f172a" stroke="#475569" stroke-width="1"/>
+    <rect x="156" y="28" width="18" height="12" rx="1" fill="#334155"/>
+    <rect x="180" y="28" width="18" height="12" rx="1" fill="#334155"/>
+    <rect x="156" y="46" width="18" height="12" rx="1" fill="#334155"/>
+    <rect x="180" y="46" width="18" height="12" rx="1" fill="#334155"/>
+    <rect x="156" y="66" width="42" height="14" rx="1" fill="#eab308" opacity="0.8"/> <!-- ATX 3.0 12VHPWR -->
+    <rect x="156" y="86" width="42" height="24" rx="1" fill="#334155"/> <!-- 24-Pin -->
+    <!-- 80 Plus Gold Badge Mockup -->
+    <rect x="25" y="10" width="50" height="18" rx="2" fill="#eab308"/>
+    <text x="50" y="23" text-anchor="middle" fill="#000000" font-family="-apple-system, sans-serif" font-size="9" font-weight="900">80 PLUS GOLD</text>
+    <!-- Wattage -->
+    <text x="50" y="125" text-anchor="middle" fill="#ffffff" font-family="monospace" font-size="12" font-weight="bold">850W ATX 3.0</text>
+    <!-- Shadow -->
+    <ellipse cx="110" cy="152" rx="100" ry="6" fill="#0f172a" opacity="0.14"/>
+  </g>
+  <text x="200" y="265" text-anchor="middle" fill="#ca8a04" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="13" font-weight="700" letter-spacing="1">POWER SUPPLY UNIT (PSU)</text>
+</svg>

@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300" width="100%" height="100%">
+  <defs>
+    <linearGradient id="gpuShroud" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1e293b" />
+      <stop offset="100%" stop-color="#0f172a" />
+    </linearGradient>
+    <linearGradient id="gpuFan" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#334155" />
+      <stop offset="100%" stop-color="#1e293b" />
+    </linearGradient>
+  </defs>
+  <rect width="400" height="300" fill="#f8fafc" rx="8"/>
+  <g transform="translate(65, 65)">
+    <!-- PCIe Bracket -->
+    <rect x="0" y="5" width="12" height="120" rx="2" fill="#94a3b8"/>
+    <rect x="3" y="25" width="6" height="15" fill="#475569"/>
+    <rect x="3" y="50" width="6" height="15" fill="#475569"/>
+    <!-- GPU Main Shroud -->
+    <rect x="12" y="15" width="255" height="105" rx="6" fill="url(#gpuShroud)" stroke="#334155" stroke-width="2"/>
+    <!-- PCIe Gold Finger Pins -->
+    <rect x="50" y="120" width="140" height="10" rx="1" fill="#eab308"/>
+    <!-- Triple Cooling Fans -->
+    <!-- Fan 1 -->
+    <circle cx="65" cy="68" r="35" fill="url(#gpuFan)" stroke="#475569" stroke-width="1.5"/>
+    <circle cx="65" cy="68" r="12" fill="#0f172a"/>
+    <line x1="65" y1="35" x2="65" y2="101" stroke="#64748b" stroke-width="2" stroke-dasharray="4 2"/>
+    <!-- Fan 2 -->
+    <circle cx="140" cy="68" r="35" fill="url(#gpuFan)" stroke="#475569" stroke-width="1.5"/>
+    <circle cx="140" cy="68" r="12" fill="#0f172a"/>
+    <line x1="140" y1="35" x2="140" y2="101" stroke="#64748b" stroke-width="2" stroke-dasharray="4 2"/>
+    <!-- Fan 3 -->
+    <circle cx="215" cy="68" r="35" fill="url(#gpuFan)" stroke="#475569" stroke-width="1.5"/>
+    <circle cx="215" cy="68" r="12" fill="#0f172a"/>
+    <line x1="215" y1="35" x2="215" y2="101" stroke="#64748b" stroke-width="2" stroke-dasharray="4 2"/>
+    <!-- Top RGB Accent Strip -->
+    <rect x="30" y="20" width="220" height="4" rx="2" fill="#10b981"/>
+    <!-- Shadow -->
+    <ellipse cx="140" cy="142" rx="130" ry="6" fill="#0f172a" opacity="0.14"/>
+  </g>
+  <text x="200" y="265" text-anchor="middle" fill="#0f766e" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="13" font-weight="700" letter-spacing="1">GRAPHICS CARD (GPU)</text>
+</svg>

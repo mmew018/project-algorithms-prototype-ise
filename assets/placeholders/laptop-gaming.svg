@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300" width="100%" height="100%">
+  <defs>
+    <linearGradient id="gamingScreen" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0f172a" />
+      <stop offset="50%" stop-color="#1e1b4b" />
+      <stop offset="100%" stop-color="#311042" />
+    </linearGradient>
+    <linearGradient id="rgbAccent" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#3b82f6" />
+      <stop offset="50%" stop-color="#8b5cf6" />
+      <stop offset="100%" stop-color="#ec4899" />
+    </linearGradient>
+    <linearGradient id="darkArmor" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1e293b" />
+      <stop offset="100%" stop-color="#090d16" />
+    </linearGradient>
+  </defs>
+  <rect width="400" height="300" fill="#f8fafc" rx="8"/>
+  <g transform="translate(60, 45)">
+    <!-- Screen Lid with aggressive chamfered angles -->
+    <polygon points="30,12 250,12 265,160 15,160" fill="url(#darkArmor)" stroke="#334155" stroke-width="2"/>
+    <!-- Screen Display -->
+    <rect x="35" y="22" width="210" height="126" rx="2" fill="url(#gamingScreen)"/>
+    <!-- High Refresh Rate & Cyber Graphic on Screen -->
+    <polygon points="120,40 180,95 100,95" fill="none" stroke="#06b6d4" stroke-width="2" opacity="0.8"/>
+    <text x="140" y="115" text-anchor="middle" fill="#38bdf8" font-family="sans-serif" font-size="11" font-weight="bold">RTX / 240Hz</text>
+    <!-- RGB Strip below hinge -->
+    <rect x="40" y="156" width="200" height="3" fill="url(#rgbAccent)"/>
+    <!-- Base Keyboard Chassis -->
+    <path d="M 0 162 L 280 162 L 260 196 L 20 196 Z" fill="#0f172a" stroke="#1e293b" stroke-width="1.5"/>
+    <!-- RGB Keyboard Glow Area -->
+    <rect x="55" y="166" width="170" height="16" rx="2" fill="#1e1b4b"/>
+    <rect x="60" y="168" width="160" height="12" fill="url(#rgbAccent)" opacity="0.75"/>
+    <!-- Trackpad -->
+    <rect x="110" y="185" width="60" height="8" rx="1.5" fill="#1e293b" stroke="#334155" stroke-width="1"/>
+    <!-- Shadow -->
+    <ellipse cx="140" cy="202" rx="135" ry="7" fill="#0f172a" opacity="0.16"/>
+  </g>
+  <text x="200" y="270" text-anchor="middle" fill="#6366f1" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="13" font-weight="700" letter-spacing="1">GAMING LAPTOP</text>
+</svg>

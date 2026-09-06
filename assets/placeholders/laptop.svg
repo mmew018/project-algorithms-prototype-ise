@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300" width="100%" height="100%">
+  <defs>
+    <linearGradient id="laptopBody" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#334155" />
+      <stop offset="100%" stop-color="#1e293b" />
+    </linearGradient>
+    <linearGradient id="laptopScreen" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#0284c7" />
+      <stop offset="100%" stop-color="#0f172a" />
+    </linearGradient>
+    <linearGradient id="laptopBase" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#64748b" />
+      <stop offset="50%" stop-color="#94a3b8" />
+      <stop offset="100%" stop-color="#64748b" />
+    </linearGradient>
+  </defs>
+  <rect width="400" height="300" fill="#f8fafc" rx="8"/>
+  <g transform="translate(60, 45)">
+    <!-- Screen Lid -->
+    <rect x="25" y="10" width="230" height="150" rx="8" fill="url(#laptopBody)" stroke="#475569" stroke-width="2"/>
+    <!-- Screen Display -->
+    <rect x="35" y="20" width="210" height="130" rx="3" fill="url(#laptopScreen)"/>
+    <!-- Screen Content Mockup -->
+    <rect x="48" y="32" width="70" height="6" rx="3" fill="#38bdf8" opacity="0.8"/>
+    <rect x="48" y="45" width="120" height="4" rx="2" fill="#94a3b8" opacity="0.4"/>
+    <rect x="48" y="55" width="100" height="4" rx="2" fill="#94a3b8" opacity="0.4"/>
+    <rect x="48" y="65" width="140" height="4" rx="2" fill="#94a3b8" opacity="0.4"/>
+    <!-- Webcam -->
+    <circle cx="140" cy="15" r="2.5" fill="#64748b"/>
+    <!-- Base / Keyboard section -->
+    <path d="M 0 162 L 280 162 L 265 192 L 15 192 Z" fill="url(#laptopBase)"/>
+    <rect x="65" y="165" width="150" height="15" rx="2" fill="#334155" opacity="0.4"/>
+    <!-- Trackpad -->
+    <rect x="110" y="182" width="60" height="7" rx="1.5" fill="#cbd5e1" stroke="#94a3b8" stroke-width="0.5"/>
+    <!-- Shadow -->
+    <ellipse cx="140" cy="198" rx="130" ry="6" fill="#0f172a" opacity="0.12"/>
+  </g>
+  <text x="200" y="270" text-anchor="middle" fill="#64748b" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="13" font-weight="600" letter-spacing="1">ULTRABOOK / LAPTOP</text>
+</svg>
