@@ -22,7 +22,7 @@ Modern computer hardware catalogs feature intricate specifications with multidim
 - CPU cores, clock frequencies, thermal design power (TDP), cache architectures (e.g. 3D V-Cache, AVX-512).
 - GPU architectures, TGP wattage limits, VRAM capacities, memory buses.
 - Display resolutions, panel types (IPS, OLED, Fast IPS), color spaces (sRGB, DCI-P3), refresh rates.
-- Form factor considerations, battery capacities (Whr), and chassis weight.
+- Form factor considerations, battery capacities (Wh), and chassis weight.
 
 ### Limitations of Traditional E-Commerce Search:
 1. **Keyword Rigidity (Exact-Match Failure):** A query like `"โน้ตบุ๊กสำหรับเขียนโปรแกรม งบไม่เกิน 30000"` fails if product titles do not explicitly contain the exact tokens `"เขียนโปรแกรม"`.

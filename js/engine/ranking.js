@@ -22,40 +22,47 @@ class ISERankingEngine {
   rank(candidates, parsedIntent) {
     if (!candidates || candidates.length === 0) return [];
 
+    const activeCriteria = this.getActiveCriteria(parsedIntent);
+    const activeWeightTotal = Object.entries(activeCriteria)
+      .filter(([, active]) => active)
+      .reduce((total, [criterion]) => total + this.weights[criterion], 0);
+
     const scoredProducts = candidates.map(product => {
-      const relevanceScore = this.computeRelevanceScore(product, parsedIntent);
-      const budgetScore = this.computeBudgetScore(product, parsedIntent);
-      const specScore = this.computeSpecificationScore(product, parsedIntent);
-      const useCaseScore = this.computeUseCaseScore(product, parsedIntent);
+      const relevanceScore = activeCriteria.relevance ? this.computeRelevanceScore(product, parsedIntent) : null;
+      const budgetScore = activeCriteria.budget ? this.computeBudgetScore(product, parsedIntent) : null;
+      const specScore = activeCriteria.specs ? this.computeSpecificationScore(product, parsedIntent) : null;
+      const useCaseScore = activeCriteria.useCase ? this.computeUseCaseScore(product, parsedIntent) : null;
 
-      const rawFinalScore =
-        relevanceScore * this.weights.relevance +
-        budgetScore * this.weights.budget +
-        specScore * this.weights.specs +
-        useCaseScore * this.weights.useCase;
+      const weightedScores = { relevance: relevanceScore, budget: budgetScore, specs: specScore, useCase: useCaseScore };
+      const rawFinalScore = activeWeightTotal > 0
+        ? Object.entries(weightedScores).reduce((total, [criterion, score]) => {
+          return score === null ? total : total + score * this.weights[criterion];
+        }, 0) / activeWeightTotal
+        : null;
 
-      const finalScore = Math.min(100, Math.max(0, Math.round(rawFinalScore)));
+      const finalScore = rawFinalScore === null ? null : Math.min(100, Math.max(0, Math.round(rawFinalScore)));
 
       return {
         ...product,
         matchScore: finalScore,
         scoreBreakdown: {
           overall: finalScore,
-          relevance: Math.round(relevanceScore),
-          budget: Math.round(budgetScore),
-          specs: Math.round(specScore),
-          useCase: Math.round(useCaseScore)
-        }
+          relevance: relevanceScore === null ? null : Math.round(relevanceScore),
+          budget: budgetScore === null ? null : Math.round(budgetScore),
+          specs: specScore === null ? null : Math.round(specScore),
+          useCase: useCaseScore === null ? null : Math.round(useCaseScore)
+        },
+        activeCriteria: { ...activeCriteria }
       };
     });
 
     // Sort descending by match score, tie-breaking on use-case score and price
     scoredProducts.sort((a, b) => {
-      if (b.matchScore !== a.matchScore) {
-        return b.matchScore - a.matchScore;
+      if ((b.matchScore ?? -1) !== (a.matchScore ?? -1)) {
+        return (b.matchScore ?? -1) - (a.matchScore ?? -1);
       }
-      if (b.scoreBreakdown.useCase !== a.scoreBreakdown.useCase) {
-        return b.scoreBreakdown.useCase - a.scoreBreakdown.useCase;
+      if ((b.scoreBreakdown.useCase ?? -1) !== (a.scoreBreakdown.useCase ?? -1)) {
+        return (b.scoreBreakdown.useCase ?? -1) - (a.scoreBreakdown.useCase ?? -1);
       }
       return a.price - b.price;
     });
@@ -63,22 +70,35 @@ class ISERankingEngine {
     return scoredProducts;
   }
 
+  getActiveCriteria(parsedIntent = {}) {
+    const specs = parsedIntent.specs || {};
+    const hasSpecs = Object.values(specs).some(value => value !== null && value !== undefined);
+    const hasProductIntent = Boolean(parsedIntent.category || parsedIntent.brand || parsedIntent.useCase || hasSpecs);
+
+    return {
+      relevance: hasProductIntent,
+      budget: Boolean(parsedIntent.budget && (parsedIntent.budget.min || parsedIntent.budget.max)),
+      specs: hasSpecs,
+      useCase: Boolean(parsedIntent.useCase)
+    };
+  }
+
   /**
    * 1. Relevance Score (0 - 100)
    * Evaluates text token overlap, category alignment, and brand match.
    */
   computeRelevanceScore(product, parsedIntent) {
-    let score = 50; // Baseline
+    let score = 35;
 
     // Category match
     if (parsedIntent.category) {
       if (product.category === parsedIntent.category) {
-        score += 35;
+        score += 45;
       } else if (
         parsedIntent.category === 'Laptop' &&
         product.category === 'Gaming Laptop'
       ) {
-        score += 25; // Compatible category
+        score += 35; // Compatible category
       } else {
         score -= 25;
       }
@@ -95,11 +115,11 @@ class ISERankingEngine {
 
     // Token hit boost from inverted index
     if (product._retrievalMeta && product._retrievalMeta.tokenHitCount) {
-      const hitBonus = Math.min(20, product._retrievalMeta.tokenHitCount * 5);
+      const hitBonus = Math.min(25, product._retrievalMeta.tokenHitCount * 10);
       score += hitBonus;
     }
 
-    return Math.min(100, Math.max(10, score));
+    return Math.min(100, Math.max(0, score));
   }
 
   /**
@@ -109,10 +129,7 @@ class ISERankingEngine {
    */
   computeBudgetScore(product, parsedIntent) {
     const budget = parsedIntent.budget;
-    if (!budget || !budget.max) {
-      // If no budget specified, return neutral score based on value-for-money
-      return 85;
-    }
+    if (!budget || !budget.max) return null;
 
     const maxBudget = budget.max;
     const price = product.price;
@@ -162,6 +179,13 @@ class ISERankingEngine {
       } else {
         evalCriteria.push(40);
       }
+    }
+
+    // Evaluate CPU family/model
+    if (specs.cpu) {
+      const targetCpu = specs.cpu.toLowerCase();
+      const productCpu = (product.cpu || '').toLowerCase();
+      evalCriteria.push(productCpu.includes(targetCpu) ? 100 : 40);
     }
 
     // Evaluate RAM
@@ -220,8 +244,7 @@ class ISERankingEngine {
       return sum / evalCriteria.length;
     }
 
-    // Fallback: derive specification score from product's native performance level
-    return product.performanceLevel || 80;
+    return null;
   }
 
   /**
@@ -230,10 +253,7 @@ class ISERankingEngine {
    */
   computeUseCaseScore(product, parsedIntent) {
     const useCase = parsedIntent.useCase;
-    if (!useCase) {
-      // Default to general productivity / performance
-      return product.productivityLevel || product.performanceLevel || 80;
-    }
+    if (!useCase) return null;
 
     switch (useCase) {
       case 'Programming':

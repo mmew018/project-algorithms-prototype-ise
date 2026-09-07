@@ -21,7 +21,7 @@
          ========================================== -->
     <header class="site-header" role="banner">
       <div class="header-inner">
-        <a href="#search" class="brand-wrapper" id="brandLogoBtn" aria-label="ISE หน้าหลัก">
+        <a href="#search" class="brand-wrapper" id="brandLogoBtn" data-view="search" aria-label="ISE หน้าหลัก">
           <div class="brand-logo" aria-hidden="true">ISE</div>
           <div class="brand-text">
             <span class="brand-name">NexusTech <span>/ ISE</span></span>
@@ -136,7 +136,7 @@
         </div>
 
         <!-- Pipeline Execution Feedback Bar (Visual Simulation) -->
-        <div class="pipeline-status" id="pipelineStatus" aria-live="polite">
+        <div class="pipeline-status" id="pipelineStatus" aria-live="polite" hidden>
           <div class="pipeline-spinner" aria-hidden="true"></div>
           <span id="pipelineStatusText">กำลังวิเคราะห์ความต้องการ...</span>
         </div>
@@ -162,7 +162,7 @@
                 <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path>
                 <line x1="12" y1="17" x2="12.01" y2="17"></line>
               </svg>
-              <h2 class="qu-title">เราเข้าใจความต้องการของคุณ (Interpreted Intent)</h2>
+              <h2 class="qu-title">เราเข้าใจความต้องการของคุณ</h2>
             </div>
             <span class="qu-subtitle" id="quRawEcho"></span>
           </div>
@@ -175,13 +175,14 @@
             <strong>เป้าหมายการจัดอันดับหลัก:</strong>
             <span id="quPriorityText">ความเหมาะสมโดยรวมของสเปกต่อราคา</span>
           </div>
+          <p class="match-score-help">คะแนนความตรงกับเงื่อนไขคำนวณเฉพาะข้อมูลที่คุณระบุ ไม่ใช่ค่าความแม่นยำทางสถิติ</p>
         </div>
 
         <!-- Results Meta Bar & Controls -->
         <div class="results-meta-bar" id="resultsMetaBar">
           <div class="results-count-wrap">
             <span class="results-count-text">
-              แสดงสินค้าทั้งหมด <strong id="resultsCount">0</strong> รายการ
+              พบสินค้า <strong id="resultsCount">0</strong> รายการ
             </span>
             <span class="results-latency-pill" id="resultsLatency">คำนวณใน 0.00 ms</span>
           </div>
@@ -196,19 +197,21 @@
                 <line x1="20" y1="21" x2="20" y2="16"></line>
                 <line x1="20" y1="12" x2="20" y2="3"></line>
               </svg>
-              <span>ตัวกรอง (Filters)</span>
+              <span>ตัวกรอง</span>
             </button>
 
             <label for="sortSelect" class="sort-label">เรียงลำดับตาม:</label>
             <select id="sortSelect" class="sort-select">
-              <option value="match" selected>คะแนนความเหมาะสมสูงสุด (Best Match)</option>
+              <option value="match" selected>ตรงกับเงื่อนไขมากที่สุด</option>
               <option value="price-asc">ราคา: ต่ำ → สูง</option>
               <option value="price-desc">ราคา: สูง → ต่ำ</option>
-              <option value="spec">คะแนนด้านสเปก (Specs)</option>
-              <option value="relevance">คะแนนตรงความต้องการ (Relevance)</option>
+              <option value="spec">ตรงกับสเปกที่ระบุมากที่สุด</option>
+              <option value="relevance">ตรงกับคำค้นเท่านั้น</option>
             </select>
           </div>
         </div>
+
+        <div class="active-filters-summary" id="activeFiltersSummary" aria-live="polite" hidden></div>
 
         <!-- Layout: Sidebar Filters + Results Grid -->
         <div class="search-results-layout">
@@ -230,17 +233,19 @@
 
             <!-- Price Range Filter -->
             <div class="filter-group">
-              <div class="filter-group-title">ช่วงราคา (THB)</div>
+              <div class="filter-group-title">ช่วงราคา</div>
               <div class="filter-price-inputs">
-                <input type="number" id="filterPriceMin" class="price-input" placeholder="ต่ำสุด" min="0" step="500">
+                <label class="sr-only" for="filterPriceMin">ราคาต่ำสุด</label>
+                <input type="number" id="filterPriceMin" class="price-input" placeholder="ต่ำสุด" min="0" step="500" inputmode="numeric">
                 <span>-</span>
-                <input type="number" id="filterPriceMax" class="price-input" placeholder="สูงสุด" min="0" step="500">
+                <label class="sr-only" for="filterPriceMax">ราคาสูงสุด</label>
+                <input type="number" id="filterPriceMax" class="price-input" placeholder="สูงสุด" min="0" step="500" inputmode="numeric">
               </div>
             </div>
 
             <!-- Brand Filter -->
             <div class="filter-group">
-              <div class="filter-group-title">แบรนด์ (Brand)</div>
+              <div class="filter-group-title">แบรนด์</div>
               <div class="filter-options-list" id="filterBrandList">
                 <!-- Injected via JavaScript -->
               </div>
@@ -283,7 +288,35 @@
                 </label>
               </div>
             </div>
+
+            <div class="filter-group" id="filterStorageGroup">
+              <div class="filter-group-title">ความจุพื้นที่จัดเก็บ</div>
+              <div class="filter-options-list" id="filterStorageList">
+                <label class="filter-checkbox-label"><input type="checkbox" name="filterStorage" value="512"> 512GB ขึ้นไป</label>
+                <label class="filter-checkbox-label"><input type="checkbox" name="filterStorage" value="1000"> 1TB ขึ้นไป</label>
+                <label class="filter-checkbox-label"><input type="checkbox" name="filterStorage" value="2000"> 2TB ขึ้นไป</label>
+              </div>
+            </div>
+
+            <div class="filter-group" id="filterDisplayGroup">
+              <div class="filter-group-title">ขนาดหน้าจอ</div>
+              <div class="filter-options-list" id="filterDisplayList">
+                <label class="filter-checkbox-label"><input type="checkbox" name="filterDisplay" value="24"> 24 นิ้วขึ้นไป</label>
+                <label class="filter-checkbox-label"><input type="checkbox" name="filterDisplay" value="27"> 27 นิ้วขึ้นไป</label>
+                <label class="filter-checkbox-label"><input type="checkbox" name="filterDisplay" value="32"> 32 นิ้วขึ้นไป</label>
+              </div>
+            </div>
+
+            <div class="filter-group" id="filterRefreshGroup">
+              <div class="filter-group-title">รีเฟรชเรตหน้าจอ</div>
+              <div class="filter-options-list" id="filterRefreshList">
+                <label class="filter-checkbox-label"><input type="checkbox" name="filterRefresh" value="144"> 144Hz ขึ้นไป</label>
+                <label class="filter-checkbox-label"><input type="checkbox" name="filterRefresh" value="165"> 165Hz ขึ้นไป</label>
+                <label class="filter-checkbox-label"><input type="checkbox" name="filterRefresh" value="240"> 240Hz ขึ้นไป</label>
+              </div>
+            </div>
           </aside>
+          <button type="button" class="filter-overlay" id="filterOverlay" aria-label="ปิดตัวกรอง" tabindex="-1"></button>
 
           <!-- Product Grid -->
           <div class="product-grid-wrapper">
@@ -298,7 +331,7 @@
                 <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
                 <line x1="8" y1="11" x2="14" y2="11"></line>
               </svg>
-              <h3 class="empty-state-title">ไม่พบสินค้าที่ตรงกับทุกเงื่อนไข</h3>
+              <h3 class="empty-state-title" id="emptyStateTitle">ไม่พบสินค้าที่ตรงกับทุกเงื่อนไข</h3>
               <p class="empty-state-desc" id="emptyStateDesc">
                 การตั้งเงื่อนไขพร้อมกันหลายอย่างอาจทำให้ไม่มีสินค้าที่ตรงสเปกทั้งหมด ลองผ่อนปรนเงื่อนไขบางอย่างดูครับ
               </p>
@@ -318,7 +351,7 @@
         <div class="compare-container">
           <div class="compare-header-row">
             <div>
-              <h2 class="compare-title">เปรียบเทียบสเปกสินค้า (Side-by-Side Comparison)</h2>
+              <h2 class="compare-title">เปรียบเทียบสเปกสินค้า</h2>
               <p style="color: var(--text-secondary); font-size: 0.9rem;">
                 เปรียบเทียบฮาร์ดแวร์ได้สูงสุด 3 รายการ พร้อมเน้นความแตกต่างของสเปกเพื่อช่วยในการตัดสินใจ
               </p>
@@ -422,11 +455,13 @@
           </p>
 
           <div class="formula-box">
-FinalScore = (RelevanceScore × 0.30)
-           + (BudgetScore × 0.25)
-           + (SpecificationScore × 0.25)
-           + (UseCaseScore × 0.20)
+MatchScore = Σ(คะแนนของเกณฑ์ที่ระบุ × น้ำหนัก)
+             ÷ Σ(น้ำหนักของเกณฑ์ที่ระบุ)
           </div>
+
+          <p class="algorithm-note">
+            ระบบนำเฉพาะเกณฑ์ที่ผู้ใช้ระบุมาคำนวณและปรับน้ำหนักรวมใหม่ เกณฑ์ที่ไม่ได้ระบุจะแสดงว่า “ไม่ได้ระบุ” และไม่เพิ่มคะแนนให้สินค้า
+          </p>
 
           <div style="display: flex; flex-direction: column; gap: 1.25rem; margin-top: 1.5rem;">
             <div class="score-breakdown-card">
@@ -434,7 +469,7 @@ FinalScore = (RelevanceScore × 0.30)
                 1. คะแนนความตรงของคำค้นหา (Relevance Score: น้ำหนัก 30%)
               </h4>
               <p style="font-size: 0.88rem; color: var(--text-secondary);">
-                ประเมินการตรงกับหมวดหมู่หลัก (Category Match +35), แบรนด์ (+15), และความถี่ของคำสำคัญที่ตรงกับ Inverted Index (Token Hits สูงสุด +20)
+                ประเมินการตรงกับหมวดหมู่หลัก แบรนด์ และคำสำคัญที่ตรงกับดัชนีค้นหา
               </p>
             </div>
 
@@ -443,7 +478,7 @@ FinalScore = (RelevanceScore × 0.30)
                 2. คะแนนความคุ้มค่างบประมาณ (Budget Score: น้ำหนัก 25%)
               </h4>
               <p style="font-size: 0.88rem; color: var(--text-secondary);">
-                หากราคา \(P \le B_{\text{max}}\) จะให้คะแนน 92-100 ตามอัตราการใช้งบอย่างคุ้มค่า หากเกินงบจะถูกลดคะแนนตามสัดส่วน \(100 - (\text{overflow} \times 350)\) เพื่อให้สินค้าที่เกินงบเล็กน้อยแต่สเปกคุ้มค่ายังมีโอกาสแข่งขันได้
+                หากราคาสินค้าไม่เกินงบสูงสุด ระบบจะประเมินความคุ้มค่าการใช้งบ หากเกินงบจะลดคะแนนตามสัดส่วน เพื่อให้สินค้าที่เกินงบเล็กน้อยแต่สเปกเหมาะสมยังมีโอกาสถูกพิจารณา
               </p>
             </div>
 
@@ -461,7 +496,7 @@ FinalScore = (RelevanceScore × 0.30)
                 4. คะแนนความเหมาะสมกับงาน (Use Case Score: น้ำหนัก 20%)
               </h4>
               <p style="font-size: 0.88rem; color: var(--text-secondary);">
-                ประเมินความเหมาะสมเฉพาะด้าน เช่น สำหรับงาน "Programming" วัดจากคะแนน Multi-core CPU และ RAM, สำหรับ "Thin & Light" คำนวณจากน้ำหนัก (\(\le 1.25\text{kg}\)) และขนาดแบตเตอรี่ (\(\ge 70\text{Wh}\))
+                ประเมินความเหมาะสมเฉพาะด้าน เช่น สำหรับงาน "Programming" วัดจากคะแนน Multi-core CPU และ RAM ส่วน "Thin & Light" พิจารณาน้ำหนัก ≤ 1.25 kg และแบตเตอรี่ ≥ 70 Wh
               </p>
             </div>
           </div>
@@ -570,8 +605,8 @@ FinalScore = (RelevanceScore × 0.30)
     <!-- ==========================================
          PRODUCT DETAIL DRAWER (MODAL DIALOG)
          ========================================== -->
-    <div class="drawer-backdrop" id="drawerBackdrop" role="dialog" aria-modal="true" aria-label="รายละเอียดสินค้า">
-      <div class="product-drawer" id="productDrawer">
+    <div class="drawer-backdrop" id="drawerBackdrop" role="dialog" aria-modal="true" aria-labelledby="drawerTitle">
+      <div class="product-drawer" id="productDrawer" tabindex="-1">
         <div class="drawer-header">
           <div class="drawer-title-wrap">
             <span class="drawer-category" id="drawerCategory">Laptop</span>
@@ -603,7 +638,7 @@ FinalScore = (RelevanceScore × 0.30)
     <!-- ==========================================
          FLOATING COMPARE DOCK
          ========================================== -->
-    <div class="compare-floating-dock" id="compareDock">
+    <div class="compare-floating-dock" id="compareDock" hidden>
       <span class="compare-dock-text">
         เลือกเปรียบเทียบ <strong id="compareDockCount">0</strong> / 3 รายการ
       </span>
@@ -614,6 +649,8 @@ FinalScore = (RelevanceScore × 0.30)
         ✕
       </button>
     </div>
+
+    <div class="app-toast" id="appToast" role="status" aria-live="polite" hidden></div>
 
     <!-- ==========================================
          SITE FOOTER

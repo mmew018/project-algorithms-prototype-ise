@@ -55,9 +55,9 @@ Ground Truth labels were created by domain hardware specifications matching func
 ### Scenario 6: *"โน้ตบุ๊กบางเบา แบตอึด สำหรับทำงาน"*
 - **Target:** Ultrabooks weighing $\le 1.30\text{ kg}$ with high battery longevity ($\ge 12\text{ hrs}$).
 - **Ground Truth Items:**
-  - `nb-asus-zenbook-14-ux3405` (1.20 kg, 75Whr battery, ฿39,900)
+  - `nb-asus-zenbook-14-ux3405` (1.20 kg, 75 Wh battery, ฿39,900)
   - `nb-apple-macbook-air-m3-13` (1.24 kg, 18 hrs battery, ฿44,900)
-  - `nb-lenovo-thinkpad-t14s-g4` (1.25 kg, 57Whr battery, ฿42,900)
+  - `nb-lenovo-thinkpad-t14s-g4` (1.25 kg, 57 Wh battery, ฿42,900)
 
 ---
 
@@ -110,7 +110,7 @@ Cutoff rank: $K = 3$.
 
 ### Scenario 6: โน้ตบุ๊กบางเบา แบตอึด สำหรับทำงาน
 - **Baseline:** Returns standard budget laptops. Precision@3 = 0.000.
-- **ISE:** Calculates weight and battery Whr; ranks ASUS Zenbook 14 OLED (1.20kg, 75Whr) and MacBook Air M3 (1.24kg, 18 hrs) at top. **Precision@3 = 0.667, MRR = 1.000**.
+- **ISE:** Calculates weight and battery Wh; ranks ASUS Zenbook 14 OLED (1.20 kg, 75 Wh) and MacBook Air M3 (1.24 kg, 18 hrs) at top. **Precision@3 = 0.667, MRR = 1.000**.
 
 ---
 

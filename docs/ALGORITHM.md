@@ -9,14 +9,16 @@ The ISE ranking framework applies a **Multi-Criteria Weighted Evaluation Matrix*
 3. **Specification Fulfillment** ($S_{\text{spec}}$): Exact and tiered matching of hardware components (CPU, GPU, RAM, Storage, Screen, Hz).
 4. **Domain Suitability** ($S_{\text{use}}$): Product performance indices tailored to specific use cases (Programming, Gaming, AI, Thin & Light).
 
-### Final Composite Score Formula
-$$\text{FinalScore} = \text{round}\left(w_{\text{rel}} \cdot S_{\text{rel}} + w_{\text{bud}} \cdot S_{\text{bud}} + w_{\text{spec}} \cdot S_{\text{spec}} + w_{\text{use}} \cdot S_{\text{use}}\right)$$
+### Active-Criterion Composite Score Formula
+$$\text{MatchScore} = \text{round}\left(\frac{\sum_{i \in A} w_i S_i}{\sum_{i \in A} w_i}\right)$$
+
+`A` is the set of criteria that are meaningful for the parsed query. Unspecified dimensions are stored and displayed as `null` / “ไม่ได้ระบุ”; they do not contribute a neutral, perfect, or near-perfect default score. For example, an `RTX 4060` query activates relevance and specification scoring but excludes budget and use-case scoring.
 
 Default prototype weights:
 $$w_{\text{rel}} = 0.30, \quad w_{\text{bud}} = 0.25, \quad w_{\text{spec}} = 0.25, \quad w_{\text{use}} = 0.20$$
 $$\sum w_i = 1.00$$
 
-All sub-scores $S_i$ are mathematically bounded within $[0, 100]$.
+All active sub-scores $S_i$ are mathematically bounded within $[0, 100]$. A non-empty query must also contain at least one recognized product signal (category, brand, use case, or hardware specification). Otherwise the UI returns an unknown-query state instead of ranked products.
 
 ---
 
@@ -24,10 +26,10 @@ All sub-scores $S_i$ are mathematically bounded within $[0, 100]$.
 
 ### A. Relevance Score ($S_{\text{rel}}$)
 Evaluates category alignment, brand match, and inverted index token density:
-$$S_{\text{rel}} = \min\left(100, \max\left(10, S_{\text{base}} + \Delta_{\text{cat}} + \Delta_{\text{brand}} + \min\left(20, N_{\text{hits}} \times 5\right)\right)\right)$$
+$$S_{\text{rel}} = \min\left(100, \max\left(0, S_{\text{base}} + \Delta_{\text{cat}} + \Delta_{\text{brand}} + \min\left(25, N_{\text{hits}} \times 10\right)\right)\right)$$
 Where:
-- $S_{\text{base}} = 50$ (Neutral baseline)
-- $\Delta_{\text{cat}} = +35$ for primary category match (e.g. Laptop); $+25$ for compatible subcategory (e.g. Gaming Laptop); $-25$ for category mismatch.
+- $S_{\text{base}} = 35$ (low baseline that cannot imply a strong match by itself)
+- $\Delta_{\text{cat}} = +45$ for an exact category match; $+35$ for a compatible subcategory (Gaming Laptop for a Laptop query); $-25$ for a mismatch.
 - $\Delta_{\text{brand}} = +15$ if user requested a specific brand and the product matches; $-10$ if requested another brand.
 - $N_{\text{hits}}$: Number of matching tokens from the query found in the product's inverted index posting list.
 
@@ -75,7 +77,7 @@ Where $E$ is the set of explicit criteria extracted from the query:
    - If $\text{Hz} \ge \text{Target}$: $100$
    - If $\text{Hz} < \text{Target}$: $\text{round}\left(\frac{\text{Hz}}{\text{Target}} \times 60\right)$
 
-If no explicit criteria were specified, $S_{\text{spec}} = \text{product.performanceLevel}$.
+If no explicit specification was requested, $S_{\text{spec}}$ is inactive and excluded from the composite score.
 
 ---
 
@@ -83,44 +85,40 @@ If no explicit criteria were specified, $S_{\text{spec}} = \text{product.perform
 Directly maps to the product's verified domain readiness:
 - **Programming:** $S_{\text{use}} = \text{product.programmingLevel}$ (evaluates multi-core CPU, RAM capacity, and keyboard quality).
 - **Gaming:** $S_{\text{use}} = \text{product.gamingLevel}$ (evaluates GPU TGP, screen response time, and cooling).
-- **Thin & Light:** Evaluated empirically via chassis weight $W$ (kg) and battery capacity $B$ (Whr):
+- **Thin & Light:** Evaluated empirically via chassis weight $W$ (kg) and battery capacity $B$ (Wh):
   $$S_{\text{thin}} = \min\left(100, \max\left(30, 70 + \Delta_W + \Delta_B\right)\right)$$
   - $\Delta_W = +20$ if $W \le 1.25\text{ kg}$; $+10$ if $W \le 1.50\text{ kg}$; $-30$ if $W \ge 2.20\text{ kg}$.
-  - $\Delta_B = +15$ if $B \ge 70\text{ Whr}$; $-5$ if $B \le 45\text{ Whr}$.
+  - $\Delta_B = +15$ if $B \ge 70\text{ Wh}$; $-5$ if $B \le 45\text{ Wh}$.
 - **AI Workload:** $S_{\text{use}} = \text{product.aiWorkloadLevel}$ (evaluates Tensor cores, AVX-512 support, and VRAM bandwidth).
 
 ---
 
-## 3. Step-by-Step Worked Example
+## 3. Worked Examples (Current Prototype Behavior)
 
 ### Query: *"โน้ตบุ๊กสำหรับเขียนโปรแกรม งบไม่เกิน 30000"*
-- **Extracted Intent:**
-  - Category: `Laptop`
-  - Budget: `≤ 30,000 THB`
-  - Use Case: `Programming`
-  - Inferred Spec: `RAM ≥ 16GB`, High-performance CPU
 
-### Candidate Comparison:
+Extracted intent activates `Relevance`, `Budget`, and `Use Case`. It does **not** activate `Specification`, because the user did not explicitly request RAM, CPU, or another hardware specification.
 
-#### 1. Acer Swift Go 14 (Price: ฿28,900)
-- **Relevance ($S_{\text{rel}}$):** Category match ($+35$), token hits ($+15$), base $50 \to \mathbf{95}$
-- **Budget ($S_{\text{bud}}$):** Within budget (utilization $28900 / 30000 = 0.963$). Score: $92 + (0.963 \times 8) = \mathbf{100}$
-- **Specs ($S_{\text{spec}}$):** i5-13500H 12C/16T, 16GB LPDDR5, 2.8K OLED $\to \mathbf{92}$
-- **Use Case ($S_{\text{use}}$):** `programmingLevel` = $\mathbf{92}$
-$$\text{FinalScore} = (95 \times 0.30) + (100 \times 0.25) + (92 \times 0.25) + (92 \times 0.20) = 28.5 + 25.0 + 23.0 + 18.4 = \mathbf{95} \text{ (Rank 1: Best Match)}$$
+For the top result, Acer Swift Go 14:
 
-#### 2. Lenovo IdeaPad Slim 5 14 (Price: ฿27,900)
-- **Relevance ($S_{\text{rel}}$):** $\mathbf{94}$
-- **Budget ($S_{\text{bud}}$):** Utilization $0.93 \to \mathbf{99}$
-- **Specs ($S_{\text{spec}}$):** Ryzen 7 7730U 8C/16T, 16GB RAM $\to \mathbf{89}$
-- **Use Case ($S_{\text{use}}$):** `programmingLevel` = $\mathbf{89}$
-$$\text{FinalScore} = (94 \times 0.30) + (99 \times 0.25) + (89 \times 0.25) + (89 \times 0.20) = 28.2 + 24.75 + 22.25 + 17.8 = \mathbf{93} \text{ (Rank 2)}$$
+- $S_{\text{rel}} = 80$
+- $S_{\text{bud}} = 100$
+- $S_{\text{spec}} =$ Not specified (excluded)
+- $S_{\text{use}} = 92$
 
-#### 3. HP 15-fc0000AU (Price: ฿14,900)
-- **Relevance ($S_{\text{rel}}$):** $\mathbf{85}$
-- **Budget ($S_{\text{bud}}$):** Utilization $0.496 < 0.70 \to 75 + (0.496 \times 20) = \mathbf{85}$
-- **Specs ($S_{\text{spec}}$):** Ryzen 3 4 Cores, 8GB RAM (Penalized for low RAM) $\to \mathbf{55}$
-- **Use Case ($S_{\text{use}}$):** `programmingLevel` = $\mathbf{55}$
-$$\text{FinalScore} = (85 \times 0.30) + (85 \times 0.25) + (55 \times 0.25) + (55 \times 0.20) = 25.5 + 21.25 + 13.75 + 11.0 = \mathbf{72} \text{ (Rank 4)}$$
+$$\text{MatchScore} = \text{round}\left(\frac{80(0.30)+100(0.25)+92(0.20)}{0.30+0.25+0.20}\right) = 90$$
 
-*Conclusion:* The algorithm correctly identifies that while HP 15 is cheap, it severely under-serves the functional requirement ("เขียนโปรแกรม"), ranking the 16GB H-series/Ryzen-7 laptops at the top with authentic mathematical differentiation.
+### Query: *"RTX 4060"*
+
+Only `Relevance` and `Specification` are active. Budget and use case are displayed as Not specified and cannot inflate the result.
+
+For the top exact-match GPU:
+
+- $S_{\text{rel}} = 55$
+- $S_{\text{spec}} = 100$
+- $S_{\text{bud}} =$ Not specified (excluded)
+- $S_{\text{use}} =$ Not specified (excluded)
+
+$$\text{MatchScore} = \text{round}\left(\frac{55(0.30)+100(0.25)}{0.30+0.25}\right) = 75$$
+
+This score means “match against the conditions supplied in this query”; it is not a probability or a statistical accuracy claim.

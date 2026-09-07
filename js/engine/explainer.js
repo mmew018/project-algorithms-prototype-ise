@@ -18,7 +18,17 @@ const ISEExplainer = {
     const reasons = [];
     let tradeOff = '';
 
-    const breakdown = product.scoreBreakdown || { relevance: 80, budget: 80, specs: 80, useCase: 80 };
+    const breakdown = product.scoreBreakdown || { relevance: null, budget: null, specs: null, useCase: null };
+
+    if (parsedIntent.category) {
+      const categoryMatches = product.category === parsedIntent.category ||
+        (parsedIntent.category === 'Laptop' && product.category === 'Gaming Laptop');
+      if (categoryMatches) reasons.push(`อยู่ในหมวด ${product.category} ที่ค้นหา`);
+    }
+
+    if (parsedIntent.brand && product.brand.toLowerCase() === parsedIntent.brand.toLowerCase()) {
+      reasons.push(`เป็นแบรนด์ ${product.brand} ตามที่ระบุ`);
+    }
 
     // 1. Explain Budget Signal
     if (parsedIntent.budget && parsedIntent.budget.max) {
@@ -123,9 +133,10 @@ const ISEExplainer = {
     if (reasons.length > 0) {
       summary = `เหมาะกับความต้องการนี้เพราะ ${reasons.join(', ')}`;
     } else {
-      // Fallback based on top pros and overall score
+      // Browse/catalog fallback: describe the product without pretending that
+      // unspecified criteria were matched.
       const firstPro = product.pros && product.pros.length > 0 ? product.pros[0] : '';
-      summary = `คะแนนความเหมาะสมรวมสูงที่ ${product.matchScore}/100 ${firstPro ? `โดยมีจุดเด่นคือ ${firstPro}` : ''}`;
+      summary = firstPro ? `จุดเด่นของรุ่นนี้คือ ${firstPro}` : 'ดูรายละเอียดสเปกเพื่อพิจารณาความเหมาะสมกับการใช้งานของคุณ';
     }
 
     // Add first con as trade-off if not already set

@@ -49,7 +49,7 @@ The ISE processing pipeline enforces strict separation of concerns across 5 disc
 
 ### A. Data Layer (`data/products.js`)
 - Houses the authentic hardware catalog of 60+ products across 11 key categories.
-- Ensures physical and technical consistency (e.g. realistic GPU TGPs, valid CPU socket configurations, authentic battery Whr ratings).
+- Ensures physical and technical consistency (e.g. realistic GPU TGPs, valid CPU socket configurations, authentic battery Wh ratings).
 - Structured schema exposes numeric attributes (`price`, `ram`, `storage`, `displaySize`, `refreshRate`, `weight`, `battery`) and normalized domain ratings (`performanceLevel`, `gamingLevel`, `productivityLevel`, `programmingLevel`, `aiWorkloadLevel`).
 
 ### B. Query Understanding Engine (`js/engine/queryParser.js`)

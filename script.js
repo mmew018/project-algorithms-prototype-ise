@@ -28,6 +28,9 @@
     // Query & Results
     currentQuery: '',
     parsedIntent: null,
+    hasSearched: false,
+    searchTimer: null,
+    searchRequestId: 0,
     rawCandidates: [],
     rankedResults: [],
     displayedResults: [],
@@ -39,7 +42,10 @@
       priceMax: null,
       brands: new Set(),
       ram: new Set(),
-      gpu: new Set()
+      gpu: new Set(),
+      storage: new Set(),
+      display: new Set(),
+      refresh: new Set()
     },
     currentSort: 'match',
 
@@ -50,6 +56,9 @@
     // Active View
     activeView: 'search'
   };
+
+  let drawerReturnFocus = null;
+  let toastTimer = null;
 
   // ==========================================================================
   // 2. DOM ELEMENT REFERENCES
@@ -67,6 +76,7 @@
     searchForm: document.getElementById('searchForm'),
     searchInput: document.getElementById('searchInput'),
     searchClearBtn: document.getElementById('searchClearBtn'),
+    searchSubmitBtn: document.getElementById('searchSubmitBtn'),
     promptChips: document.querySelectorAll('.prompt-chip'),
     pipelineStatus: document.getElementById('pipelineStatus'),
     pipelineStatusText: document.getElementById('pipelineStatusText'),
@@ -84,8 +94,10 @@
     quRawEcho: document.getElementById('quRawEcho'),
 
     // Results Meta Bar
+    resultsMetaBar: document.getElementById('resultsMetaBar'),
     resultsCount: document.getElementById('resultsCount'),
     resultsLatency: document.getElementById('resultsLatency'),
+    activeFiltersSummary: document.getElementById('activeFiltersSummary'),
     sortSelect: document.getElementById('sortSelect'),
     mobileFilterTrigger: document.getElementById('mobileFilterTrigger'),
 
@@ -98,10 +110,20 @@
     filterBrandList: document.getElementById('filterBrandList'),
     filterRamList: document.getElementById('filterRamList'),
     filterGpuList: document.getElementById('filterGpuList'),
+    filterStorageList: document.getElementById('filterStorageList'),
+    filterDisplayList: document.getElementById('filterDisplayList'),
+    filterRefreshList: document.getElementById('filterRefreshList'),
+    filterRamGroup: document.getElementById('filterRamGroup'),
+    filterGpuGroup: document.getElementById('filterGpuGroup'),
+    filterStorageGroup: document.getElementById('filterStorageGroup'),
+    filterDisplayGroup: document.getElementById('filterDisplayGroup'),
+    filterRefreshGroup: document.getElementById('filterRefreshGroup'),
+    filterOverlay: document.getElementById('filterOverlay'),
 
     // Product Grid & Empty State
     productGrid: document.getElementById('productGrid'),
     emptyState: document.getElementById('emptyState'),
+    emptyStateTitle: document.getElementById('emptyStateTitle'),
     emptyStateDesc: document.getElementById('emptyStateDesc'),
     relaxSuggestions: document.getElementById('relaxSuggestions'),
 
@@ -123,6 +145,7 @@
     compareTableWrapper: document.getElementById('compareTableWrapper'),
     btnToggleDiffs: document.getElementById('btnToggleDiffs'),
     btnClearCompare: document.getElementById('btnClearCompare'),
+    appToast: document.getElementById('appToast'),
 
     // Benchmark View
     btnRunBenchmark: document.getElementById('btnRunBenchmark'),
@@ -156,22 +179,25 @@
     // 3. Attach Event Listeners
     attachEventListeners();
 
-    // 4. Handle initial URL hash or perform default search
-    handleRouting();
-
-    // 5. Populate initial benchmark results
+    // 4. Populate initial benchmark results
     renderBenchmarkReport();
+
+    // 5. Use the URL hash as the routing source of truth
+    handleRouting(true);
   }
 
   // ==========================================================================
   // 4. ROUTING & VIEW NAVIGATION
   // ==========================================================================
-  function switchView(viewName) {
-    State.activeView = viewName;
+  const VALID_VIEWS = new Set(['search', 'catalog', 'compare', 'how-it-works', 'algorithm', 'benchmark', 'about']);
+
+  function renderRoute(viewName, isInitial = false) {
+    const safeView = VALID_VIEWS.has(viewName) ? viewName : 'search';
+    State.activeView = safeView;
 
     // Update Nav Links
     DOM.navLinks.forEach(link => {
-      if (link.dataset.view === viewName) {
+      if (link.dataset.view === safeView) {
         link.classList.add('active');
       } else {
         link.classList.remove('active');
@@ -184,41 +210,114 @@
     });
 
     const targetSection = document.getElementById(
-      viewName === 'catalog' ? 'viewSearch' :
-      viewName === 'how-it-works' ? 'viewHowItWorks' :
-      viewName === 'algorithm' ? 'viewAlgorithm' :
-      viewName === 'benchmark' ? 'viewBenchmark' :
-      viewName === 'compare' ? 'viewCompare' :
-      viewName === 'about' ? 'viewAbout' : 'viewSearch'
+      safeView === 'catalog' ? 'viewSearch' :
+      safeView === 'how-it-works' ? 'viewHowItWorks' :
+      safeView === 'algorithm' ? 'viewAlgorithm' :
+      safeView === 'benchmark' ? 'viewBenchmark' :
+      safeView === 'compare' ? 'viewCompare' :
+      safeView === 'about' ? 'viewAbout' : 'viewSearch'
     );
 
     if (targetSection) {
       targetSection.classList.add('active');
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+      window.scrollTo({ top: 0, behavior: 'auto' });
     }
 
-    if (viewName === 'compare') {
+    if (safeView === 'compare') {
       renderCompareTable();
-    } else if (viewName === 'catalog') {
-      // Show full catalog without query
-      executeSearch('', '');
+    } else if (safeView === 'catalog') {
+      showCatalog();
+    } else if (safeView === 'search' && !State.hasSearched) {
+      showCatalog();
     }
+
+    syncCompareDock();
 
     // Close mobile nav if open
     DOM.mainNav.classList.remove('mobile-open');
+    DOM.mobileMenuBtn.setAttribute('aria-expanded', 'false');
   }
 
-  function handleRouting() {
-    const hash = window.location.hash.replace('#', '') || 'search';
-    switchView(hash);
+  function navigateTo(viewName) {
+    const safeView = VALID_VIEWS.has(viewName) ? viewName : 'search';
+    if (window.location.hash === `#${safeView}`) {
+      renderRoute(safeView);
+    } else {
+      window.location.hash = safeView;
+    }
+  }
+
+  function handleRouting(isInitial = false) {
+    let hash = window.location.hash.replace('#', '');
+    if (!VALID_VIEWS.has(hash)) {
+      hash = 'search';
+      window.history.replaceState(null, '', '#search');
+    }
+    renderRoute(hash, isInitial);
+  }
+
+  function setProcessing(isProcessing) {
+    DOM.pipelineStatus.hidden = !isProcessing;
+    DOM.searchSubmitBtn.disabled = isProcessing;
+    DOM.searchForm.setAttribute('aria-busy', String(isProcessing));
+  }
+
+  function beginSearch(queryText) {
+    const query = (queryText || '').trim();
+    State.searchRequestId += 1;
+    const requestId = State.searchRequestId;
+    if (State.searchTimer) window.clearTimeout(State.searchTimer);
+
+    if (!query) {
+      setProcessing(false);
+      showCatalog();
+      return;
+    }
+
+    setProcessing(true);
+    State.searchTimer = window.setTimeout(() => {
+      if (requestId !== State.searchRequestId) return;
+      State.searchTimer = null;
+      executeSearch(query, null, { resetSort: true, resetFilters: true });
+      setProcessing(false);
+    }, 180);
+  }
+
+  function showCatalog() {
+    if (State.searchTimer) window.clearTimeout(State.searchTimer);
+    State.searchTimer = null;
+    State.searchRequestId += 1;
+    State.currentQuery = '';
+    State.parsedIntent = window.ISEQueryParser.getEmptyIntent('');
+    State.hasSearched = false;
+    State.activeCategory = '';
+    DOM.searchInput.value = '';
+    DOM.searchClearBtn.style.display = 'none';
+    setProcessing(false);
+    resetAllFilters(false);
+    resetSort();
+
+    const retrievalResult = State.retrievalEngine.retrieveCandidates(State.parsedIntent);
+    State.rawCandidates = retrievalResult.candidates;
+    State.rankedResults = State.rankingEngine.rank(State.rawCandidates, State.parsedIntent);
+    buildSidebarFilterOptions(State.rankedResults);
+    updateAdaptiveFilters('');
+    renderQueryUnderstanding(State.parsedIntent);
+    DOM.resultsLatency.hidden = true;
+    applyFiltersAndSort();
+    syncCategoryButtons();
   }
 
   // ==========================================================================
   // 5. SEARCH & RANKING PIPELINE
   // ==========================================================================
-  function executeSearch(queryText, forcedCategory = null) {
+  function executeSearch(queryText, forcedCategory = null, options = {}) {
     const tStart = performance.now();
     State.currentQuery = queryText || '';
+    State.hasSearched = Boolean(State.currentQuery || forcedCategory);
+
+    if (options.resetFilters) resetAllFilters(false);
+    if (options.resetSort) resetSort();
 
     // Step 1: Query Understanding
     State.parsedIntent = window.ISEQueryParser.parse(State.currentQuery);
@@ -228,19 +327,24 @@
       State.activeCategory = forcedCategory;
       if (forcedCategory) {
         State.parsedIntent.category = forcedCategory;
+        State.parsedIntent.isUnderstood = true;
+        State.parsedIntent.confidence = {
+          level: 'high', score: 100, recognizedSignals: ['category'], isUnderstood: true
+        };
+      } else {
+        State.parsedIntent.category = null;
       }
-    } else if (State.parsedIntent.category) {
-      State.activeCategory = State.parsedIntent.category;
+    } else {
+      State.activeCategory = State.parsedIntent.category || '';
     }
 
-    // Synchronize quickbar UI active state
-    DOM.catBtns.forEach(btn => {
-      if (btn.dataset.cat === State.activeCategory) {
-        btn.classList.add('active');
-      } else {
-        btn.classList.remove('active');
-      }
-    });
+    syncCategoryButtons();
+
+    if (State.currentQuery && !State.parsedIntent.isUnderstood) {
+      renderUnknownQueryState();
+      if (State.activeView !== 'search') navigateTo('search');
+      return;
+    }
 
     // Step 2: Candidate Retrieval
     const retrievalResult = State.retrievalEngine.retrieveCandidates(State.parsedIntent);
@@ -248,6 +352,8 @@
 
     // Step 3: Multi-Criteria Ranking
     State.rankedResults = State.rankingEngine.rank(State.rawCandidates, State.parsedIntent);
+    buildSidebarFilterOptions(State.rankedResults);
+    updateAdaptiveFilters(State.parsedIntent.category || State.activeCategory);
 
     // Step 4: Apply Additional Sidebar Filters
     applyFiltersAndSort();
@@ -258,11 +364,54 @@
     // Step 5: Render UI
     renderQueryUnderstanding(State.parsedIntent);
     DOM.resultsLatency.textContent = `คำนวณใน ${latency} ms`;
+    DOM.resultsLatency.hidden = false;
 
     // Switch view to search if currently elsewhere
     if (State.activeView !== 'search' && State.activeView !== 'catalog') {
-      switchView('search');
+      navigateTo('search');
     }
+  }
+
+  function syncCategoryButtons() {
+    DOM.catBtns.forEach(btn => btn.classList.toggle('active', btn.dataset.cat === State.activeCategory));
+  }
+
+  function resetSort() {
+    State.currentSort = 'match';
+    DOM.sortSelect.value = 'match';
+  }
+
+  function renderUnknownQueryState() {
+    State.rawCandidates = [];
+    State.rankedResults = [];
+    State.displayedResults = [];
+    DOM.resultsCount.textContent = '0';
+    DOM.resultsMetaBar.classList.add('unknown-query');
+    DOM.resultsLatency.hidden = true;
+    DOM.queryUnderstandingCard.style.display = 'none';
+    DOM.productGrid.innerHTML = '';
+    DOM.productGrid.style.display = 'none';
+    DOM.filterSidebar.hidden = true;
+    DOM.mobileFilterTrigger.hidden = true;
+    DOM.activeFiltersSummary.hidden = true;
+    DOM.emptyState.style.display = 'block';
+    DOM.emptyStateTitle.textContent = 'เราไม่สามารถระบุความต้องการสินค้าไอทีจากคำค้นนี้ได้';
+    DOM.emptyStateDesc.textContent = 'ลองระบุประเภทสินค้า ลักษณะการใช้งาน งบประมาณ หรือสเปกที่ต้องการอย่างน้อยหนึ่งอย่าง';
+    const examples = [
+      'โน้ตบุ๊กสำหรับเขียนโปรแกรม งบไม่เกิน 30000',
+      'Gaming Laptop RTX 4060',
+      'SSD 1TB สำหรับ Gaming'
+    ];
+    DOM.relaxSuggestions.innerHTML = examples.map(query => `
+      <button type="button" class="relax-btn" data-example-query="${escapeHtml(query)}">${escapeHtml(query)}</button>
+    `).join('');
+    DOM.relaxSuggestions.querySelectorAll('[data-example-query]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        DOM.searchInput.value = btn.dataset.exampleQuery;
+        DOM.searchClearBtn.style.display = 'block';
+        beginSearch(btn.dataset.exampleQuery);
+      });
+    });
   }
 
   function renderQueryUnderstanding(intent) {
@@ -347,10 +496,25 @@
       });
     }
 
+    if (State.filters.storage.size > 0) {
+      const minimum = Math.max(...State.filters.storage);
+      filtered = filtered.filter(p => (p.storage || 0) >= minimum);
+    }
+
+    if (State.filters.display.size > 0) {
+      const minimum = Math.max(...State.filters.display);
+      filtered = filtered.filter(p => (p.displaySize || 0) >= minimum);
+    }
+
+    if (State.filters.refresh.size > 0) {
+      const minimum = Math.max(...State.filters.refresh);
+      filtered = filtered.filter(p => (p.refreshRate || 0) >= minimum);
+    }
+
     // Sort Results
     switch (State.currentSort) {
       case 'match':
-        filtered.sort((a, b) => b.matchScore - a.matchScore);
+        filtered.sort((a, b) => (b.matchScore ?? -1) - (a.matchScore ?? -1));
         break;
       case 'price-asc':
         filtered.sort((a, b) => a.price - b.price);
@@ -359,20 +523,21 @@
         filtered.sort((a, b) => b.price - a.price);
         break;
       case 'spec':
-        filtered.sort((a, b) => b.scoreBreakdown.specs - a.scoreBreakdown.specs);
+        filtered.sort((a, b) => (b.scoreBreakdown.specs ?? -1) - (a.scoreBreakdown.specs ?? -1));
         break;
       case 'relevance':
-        filtered.sort((a, b) => b.scoreBreakdown.relevance - a.scoreBreakdown.relevance);
+        filtered.sort((a, b) => (b.scoreBreakdown.relevance ?? -1) - (a.scoreBreakdown.relevance ?? -1));
         break;
     }
 
     State.displayedResults = filtered;
     renderProductGrid();
+    renderActiveFilters();
   }
 
-  function buildSidebarFilterOptions() {
+  function buildSidebarFilterOptions(products = State.products) {
     // Unique Brands
-    const brands = [...new Set(State.products.map(p => p.brand))].sort();
+    const brands = [...new Set(products.map(p => p.brand))].sort();
     DOM.filterBrandList.innerHTML = brands.map(b => `
       <label class="filter-checkbox-label">
         <input type="checkbox" name="filterBrand" value="${escapeHtml(b)}">
@@ -381,12 +546,29 @@
     `).join('');
   }
 
+  function updateAdaptiveFilters(category) {
+    const laptopLike = category === 'Laptop' || category === 'Gaming Laptop' || category === 'Desktop PC';
+    const monitor = category === 'Monitor';
+    const ssd = category === 'SSD';
+
+    DOM.filterRamGroup.hidden = !laptopLike;
+    DOM.filterGpuGroup.hidden = !laptopLike;
+    DOM.filterStorageGroup.hidden = !(laptopLike || ssd);
+    DOM.filterDisplayGroup.hidden = !(laptopLike || monitor);
+    DOM.filterRefreshGroup.hidden = !(laptopLike || monitor);
+  }
+
   // ==========================================================================
   // 7. PRODUCT GRID & CARD RENDERING
   // ==========================================================================
   function renderProductGrid() {
     const products = State.displayedResults;
+    DOM.resultsMetaBar.classList.remove('unknown-query');
     DOM.resultsCount.textContent = products.length;
+    DOM.filterSidebar.hidden = false;
+    DOM.mobileFilterTrigger.hidden = false;
+    DOM.emptyStateTitle.textContent = 'ไม่พบสินค้าที่ตรงกับทุกเงื่อนไข';
+    DOM.emptyStateDesc.textContent = 'ลองผ่อนปรนเงื่อนไขบางอย่าง หรือล้างตัวกรองที่ใช้งานอยู่';
 
     if (products.length === 0) {
       DOM.productGrid.style.display = 'none';
@@ -401,12 +583,13 @@
     let html = '';
 
     products.forEach((product, index) => {
-      const isBestMatch = (index === 0 && State.currentSort === 'match' && product.matchScore >= 70);
+      const isBestMatch = (index === 0 && State.currentSort === 'match' && product.matchScore !== null && product.matchScore >= 70);
       const explanation = window.ISEExplainer.explain(product, State.parsedIntent || {});
       const inCompare = State.compareList.includes(product.id);
 
       // Score color class
       const scoreClass = product.matchScore >= 85 ? 'high' : product.matchScore >= 70 ? 'mid' : 'fair';
+      const compactSpecs = getProductSpecRows(product, true).slice(0, 5);
 
       html += `
         <article class="product-card ${isBestMatch ? 'best-match' : ''}" data-id="${product.id}">
@@ -415,7 +598,7 @@
               <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
                 <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
               </svg>
-              <span>BEST MATCH — ตรงกับความต้องการที่สุด</span>
+              <span>ตรงกับเงื่อนไขมากที่สุด</span>
             </div>
           ` : ''}
 
@@ -427,54 +610,29 @@
 
           <!-- Product Specifications & Information -->
           <div class="card-info-col">
-            <span class="card-category-badge">${escapeHtml(product.category)} • ${escapeHtml(product.subcategory || '')}</span>
+            <span class="card-category-badge">${escapeHtml(product.category)}${product.subcategory ? ` • ${escapeHtml(product.subcategory)}` : ''}</span>
             <h3 class="card-product-title">${escapeHtml(product.name)}</h3>
 
             <!-- Specification Tags -->
             <div class="card-spec-tags">
-              ${product.cpu && product.cpu !== '-' ? `<span class="spec-tag highlight">⚙️ ${escapeHtml(product.cpu.split('(')[0].trim())}</span>` : ''}
-              ${product.gpu && product.gpu !== '-' ? `<span class="spec-tag highlight">🎮 ${escapeHtml(product.gpuChip || product.gpu.split('(')[0].trim())}</span>` : ''}
-              ${product.ram ? `<span class="spec-tag">RAM ${product.ram}GB ${product.ramType || ''}</span>` : ''}
-              ${product.storage ? `<span class="spec-tag">SSD ${product.storage >= 1000 ? `${product.storage / 1000}TB` : `${product.storage}GB`}</span>` : ''}
-              ${product.displaySize ? `<span class="spec-tag">🖥️ ${product.displaySize}" ${product.refreshRate ? `${product.refreshRate}Hz` : ''}</span>` : ''}
-              ${product.weight ? `<span class="spec-tag">⚖️ ${product.weight} kg</span>` : ''}
+              ${compactSpecs.map((spec, specIndex) => `<span class="spec-tag ${specIndex < 2 ? 'highlight' : ''}">${escapeHtml(spec.compact || spec.value)}</span>`).join('')}
             </div>
 
             <!-- Explainable Ranking Signal ("Why This Result") -->
             <div class="card-rationale">
-              <strong>ทำไมระบบจึงแนะนำ:</strong> ${escapeHtml(explanation.summary)}
+              <strong>${State.hasSearched ? 'ทำไมผลลัพธ์นี้ตรง:' : 'จุดเด่น:'}</strong> ${escapeHtml(explanation.summary)}
             </div>
           </div>
 
           <!-- Scoring, Price & Action Column -->
           <div class="card-action-col">
-            <div class="match-score-badge">
+            ${product.matchScore !== null ? `<div class="match-score-badge">
               <div class="score-number-wrap">
                 <span class="score-val ${scoreClass}">${product.matchScore}</span>
                 <span class="score-max">/100</span>
               </div>
-              <span class="score-label">คะแนนความเหมาะสม</span>
-            </div>
-
-            <!-- Mini 4-Pillar Score Breakdown -->
-            <div class="mini-breakdown" title="การแจกแจงคะแนน 4 ด้าน">
-              <div class="breakdown-row">
-                <span>คำค้น:</span>
-                <strong>${product.scoreBreakdown.relevance}</strong>
-              </div>
-              <div class="breakdown-row">
-                <span>งบ:</span>
-                <strong>${product.scoreBreakdown.budget}</strong>
-              </div>
-              <div class="breakdown-row">
-                <span>สเปก:</span>
-                <strong>${product.scoreBreakdown.specs}</strong>
-              </div>
-              <div class="breakdown-row">
-                <span>การใช้:</span>
-                <strong>${product.scoreBreakdown.useCase}</strong>
-              </div>
-            </div>
+              <span class="score-label">คะแนนตรงกับเงื่อนไข</span>
+            </div>` : '<div class="browse-score-note">ระบุความต้องการเพื่อดูคะแนนที่เหมาะกับคุณ</div>'}
 
             <div class="card-price-wrap">
               <span class="card-price"><span class="card-price-currency">฿</span>${product.price.toLocaleString()}</span>
@@ -504,7 +662,7 @@
         label: `ขยายงบประมาณเป็น ฿${relaxedBudget.toLocaleString()}`,
         action: () => {
           DOM.searchInput.value = State.currentQuery.replace(/\d+[\d,]*/, relaxedBudget);
-          executeSearch(DOM.searchInput.value);
+          beginSearch(DOM.searchInput.value);
         }
       });
     }
@@ -514,9 +672,12 @@
       action: resetAllFilters
     });
 
-    suggestions.push({
-      label: 'ดูสินค้าทั้งหมดในหมวดนี้',
-      action: () => executeSearch('', State.activeCategory)
+    suggestions.push(State.activeCategory ? {
+      label: `ดูสินค้าทั้งหมดในหมวด ${State.activeCategory}`,
+      action: () => executeSearch('', State.activeCategory, { resetFilters: true, resetSort: true })
+    } : {
+      label: 'ดูสินค้าทั้งหมด',
+      action: showCatalog
     });
 
     DOM.relaxSuggestions.innerHTML = suggestions.map((s, idx) => `
@@ -532,13 +693,26 @@
   // ==========================================================================
   // 8. PRODUCT DETAIL DRAWER
   // ==========================================================================
+  function renderBreakdownMeter(label, value, weight) {
+    const valueText = value === null || value === undefined ? 'ไม่ได้ระบุ' : `${value}/100`;
+    const meter = value === null || value === undefined
+      ? '<div class="meter-track inactive"><div class="meter-fill" style="width: 0"></div></div>'
+      : `<div class="meter-track"><div class="meter-fill" style="width: ${value}%"></div></div>`;
+    return `
+      <div class="breakdown-meter-row ${value === null || value === undefined ? 'inactive' : ''}">
+        <div class="meter-label-wrap"><span>${label}${weight ? ` (${weight})` : ''}</span><strong>${valueText}</strong></div>
+        ${meter}
+      </div>
+    `;
+  }
+
   function openProductDrawer(productId) {
     const product = State.products.find(p => p.id === productId);
     if (!product) return;
 
     // Retrieve computed ranking score if present
     const ranked = State.rankedResults.find(p => p.id === productId) || product;
-    const breakdown = ranked.scoreBreakdown || { relevance: 80, budget: 80, specs: 80, useCase: 80 };
+    const breakdown = ranked.scoreBreakdown || { relevance: null, budget: null, specs: null, useCase: null };
     const explanation = window.ISEExplainer.explain(ranked, State.parsedIntent || {});
 
     DOM.drawerCategory.textContent = `${product.category} • ${product.brand}`;
@@ -551,53 +725,24 @@
 
     // Render Drawer Body with NotebookSPEC style specification density
     DOM.drawerBody.innerHTML = `
-      <!-- Score Breakdown Section -->
-      <div>
+      ${ranked.matchScore !== null && ranked.matchScore !== undefined ? `<!-- Score Breakdown Section -->
+      <div class="detail-score-section">
         <h4 class="detail-section-title">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
-          </svg>
-          การประเมินความเหมาะสม (Overall Match Score: ${ranked.matchScore || 85}/100)
+          คะแนนตรงกับเงื่อนไข: ${ranked.matchScore}/100
         </h4>
+        <p class="score-detail-help">คำนวณเฉพาะเงื่อนไขที่ระบุในคำค้น เกณฑ์ที่ไม่ได้ระบุจะไม่ถูกนำไปรวมคะแนน</p>
 
         <div class="score-breakdown-card">
-          <div class="breakdown-meter-row">
-            <div class="meter-label-wrap">
-              <span>ความตรงตามคำค้นหา (Relevance 30%)</span>
-              <strong>${breakdown.relevance}/100</strong>
-            </div>
-            <div class="meter-track"><div class="meter-fill" style="width: ${breakdown.relevance}%"></div></div>
-          </div>
-
-          <div class="breakdown-meter-row">
-            <div class="meter-label-wrap">
-              <span>ความคุ้มค่าด้านงบประมาณ (Budget 25%)</span>
-              <strong>${breakdown.budget}/100</strong>
-            </div>
-            <div class="meter-track"><div class="meter-fill" style="width: ${breakdown.budget}%"></div></div>
-          </div>
-
-          <div class="breakdown-meter-row">
-            <div class="meter-label-wrap">
-              <span>สเปกฮาร์ดแวร์ต่อความต้องการ (Specifications 25%)</span>
-              <strong>${breakdown.specs}/100</strong>
-            </div>
-            <div class="meter-track"><div class="meter-fill" style="width: ${breakdown.specs}%"></div></div>
-          </div>
-
-          <div class="breakdown-meter-row">
-            <div class="meter-label-wrap">
-              <span>ความเหมาะสมเฉพาะด้าน (Use Case 20%)</span>
-              <strong>${breakdown.useCase}/100</strong>
-            </div>
-            <div class="meter-track"><div class="meter-fill" style="width: ${breakdown.useCase}%"></div></div>
-          </div>
+          ${renderBreakdownMeter('ความตรงกับคำค้น', breakdown.relevance, '30%')}
+          ${renderBreakdownMeter('ความเหมาะสมกับงบ', breakdown.budget, '25%')}
+          ${renderBreakdownMeter('ความตรงกับสเปก', breakdown.specs, '25%')}
+          ${renderBreakdownMeter('ความเหมาะสมกับการใช้งาน', breakdown.useCase, '20%')}
         </div>
-      </div>
+      </div>` : ''}
 
       <!-- Explanations & Key Highlights -->
       <div>
-        <h4 class="detail-section-title">🎯 ทำไมระบบจึงแนะนำตัวนี้ (Why This Result)</h4>
+        <h4 class="detail-section-title">🎯 ทำไมผลลัพธ์นี้จึงเหมาะ</h4>
         <div style="background-color: #f8fafc; border-left: 3px solid var(--color-primary); padding: 0.85rem; border-radius: 4px; font-size: 0.88rem; margin-bottom: 0.75rem;">
           ${escapeHtml(explanation.summary)}
         </div>
@@ -610,22 +755,14 @@
 
       <!-- Complete Technical Specifications Table -->
       <div>
-        <h4 class="detail-section-title">📋 ข้อมูลสเปกฮาร์ดแวร์ฉบับเต็ม (Hardware Specifications)</h4>
+        <h4 class="detail-section-title">📋 ข้อมูลสเปก</h4>
         <table class="spec-table">
           <tbody>
-            <tr><th>ชื่อรุ่น (Model)</th><td>${escapeHtml(product.name)}</td></tr>
-            <tr><th>แบรนด์ (Brand)</th><td>${escapeHtml(product.brand)}</td></tr>
-            <tr><th>หมวดหมู่ (Category)</th><td>${escapeHtml(product.category)} (${escapeHtml(product.subcategory || '-')})</td></tr>
+            <tr><th>ชื่อรุ่น</th><td>${escapeHtml(product.name)}</td></tr>
+            <tr><th>แบรนด์</th><td>${escapeHtml(product.brand)}</td></tr>
+            <tr><th>หมวดหมู่</th><td>${escapeHtml(product.category)}${product.subcategory ? ` (${escapeHtml(product.subcategory)})` : ''}</td></tr>
             <tr><th>ราคาทางการ</th><td><strong>฿${product.price.toLocaleString()}</strong></td></tr>
-            ${product.cpu && product.cpu !== '-' ? `<tr><th>หน่วยประมวลผล (CPU)</th><td>${escapeHtml(product.cpu)}</td></tr>` : ''}
-            ${product.gpu && product.gpu !== '-' ? `<tr><th>ชิปกราฟิก (GPU)</th><td>${escapeHtml(product.gpu)}</td></tr>` : ''}
-            ${product.ram ? `<tr><th>หน่วยความจำ (RAM)</th><td>${product.ram}GB ${escapeHtml(product.ramType || '')}</td></tr>` : ''}
-            ${product.storage ? `<tr><th>พื้นที่จัดเก็บ (Storage)</th><td>${product.storage >= 1000 ? `${product.storage / 1000}TB` : `${product.storage}GB`} ${escapeHtml(product.storageType || '')}</td></tr>` : ''}
-            ${product.displaySize ? `<tr><th>หน้าจอแสดงผล</th><td>${product.displaySize} นิ้ว (${escapeHtml(product.resolution || '')}) ${product.refreshRate ? `${product.refreshRate}Hz` : ''}</td></tr>` : ''}
-            ${product.panelType && product.panelType !== '-' ? `<tr><th>ชนิดพาเนล</th><td>${escapeHtml(product.panelType)}</td></tr>` : ''}
-            ${product.weight ? `<tr><th>น้ำหนักตัวเครื่อง</th><td>${product.weight} กิโลกรัม</td></tr>` : ''}
-            ${product.battery ? `<tr><th>ขนาดแบตเตอรี่</th><td>${product.battery} Whr</td></tr>` : ''}
-            ${product.operatingSystem && product.operatingSystem !== '-' ? `<tr><th>ระบบปฏิบัติการ</th><td>${escapeHtml(product.operatingSystem)}</td></tr>` : ''}
+            ${getProductSpecRows(product).map(row => `<tr><th>${escapeHtml(row.label)}</th><td>${escapeHtml(row.value)}</td></tr>`).join('')}
           </tbody>
         </table>
       </div>
@@ -635,13 +772,13 @@
         <h4 class="detail-section-title">⚖️ จุดเด่นและข้อควรพิจารณา</h4>
         <div class="pros-cons-grid">
           <div class="pros-box">
-            <div class="pros-box-title">✓ จุดเด่น (Strengths)</div>
+            <div class="pros-box-title">✓ จุดเด่น</div>
             <ul class="pros-list">
               ${(product.pros || ['สเปกคุ้มค่า', 'แบรนด์มาตรฐาน']).map(p => `<li>${escapeHtml(p)}</li>`).join('')}
             </ul>
           </div>
           <div class="cons-box">
-            <div class="cons-box-title">! ข้อควรพิจารณา (Considerations)</div>
+            <div class="cons-box-title">! ข้อควรพิจารณา</div>
             <ul class="cons-list">
               ${(product.cons || ['ราคาสูงตามประสิทธิภาพ']).map(c => `<li>${escapeHtml(c)}</li>`).join('')}
             </ul>
@@ -650,13 +787,19 @@
       </div>
     `;
 
+    drawerReturnFocus = document.activeElement;
     DOM.drawerBackdrop.classList.add('open');
     document.body.style.overflow = 'hidden';
+    document.getElementById('mainContent').setAttribute('inert', '');
+    window.requestAnimationFrame(() => DOM.drawerCloseBtn.focus());
   }
 
   function closeProductDrawer() {
     DOM.drawerBackdrop.classList.remove('open');
     document.body.style.overflow = '';
+    document.getElementById('mainContent').removeAttribute('inert');
+    if (drawerReturnFocus && typeof drawerReturnFocus.focus === 'function') drawerReturnFocus.focus();
+    drawerReturnFocus = null;
   }
 
   // ==========================================================================
@@ -668,7 +811,7 @@
       State.compareList.splice(idx, 1);
     } else {
       if (State.compareList.length >= 3) {
-        alert('คุณสามารถเปรียบเทียบได้สูงสุด 3 รายการพร้อมกัน (กรุณานำสินค้าเดิมออกก่อน)');
+        showToast('เปรียบเทียบได้สูงสุด 3 รายการ กรุณานำสินค้าเดิมออกก่อน');
         return;
       }
       State.compareList.push(productId);
@@ -682,14 +825,10 @@
     DOM.navCompareCount.textContent = count;
     DOM.compareDockCount.textContent = count;
 
-    if (count > 0) {
-      DOM.compareDock.classList.add('visible');
-    } else {
-      DOM.compareDock.classList.remove('visible');
-    }
+    syncCompareDock();
 
     // Refresh active button states in product cards
-    document.querySelectorAll('.btn-compare-toggle').forEach(btn => {
+    DOM.productGrid.querySelectorAll('[data-action="toggle-compare"]').forEach(btn => {
       const pId = btn.dataset.id;
       if (State.compareList.includes(pId)) {
         btn.classList.add('selected');
@@ -702,6 +841,19 @@
 
     if (State.activeView === 'compare') {
       renderCompareTable();
+    }
+  }
+
+  function syncCompareDock() {
+    const shouldShow = State.compareList.length > 0 && State.activeView !== 'compare';
+    DOM.compareDock.hidden = !shouldShow;
+
+    if (shouldShow) {
+      DOM.compareDock.classList.add('visible');
+      document.body.classList.add('compare-active');
+    } else {
+      DOM.compareDock.classList.remove('visible');
+      document.body.classList.remove('compare-active');
     }
   }
 
@@ -718,20 +870,14 @@
 
     const items = State.compareList.map(id => State.products.find(p => p.id === id)).filter(Boolean);
 
-    // Identify difference fields if highlightDiffs is enabled
-    const isDiff = (fieldGetter) => {
-      if (!State.highlightDiffs || items.length < 2) return false;
-      const first = fieldGetter(items[0]);
-      return items.some(it => fieldGetter(it) !== first);
-    };
-
-    const diffPrice = isDiff(p => p.price);
-    const diffCpu = isDiff(p => p.cpu);
-    const diffGpu = isDiff(p => p.gpu);
-    const diffRam = isDiff(p => p.ram);
-    const diffStorage = isDiff(p => p.storage);
-    const diffScreen = isDiff(p => p.displaySize);
-    const diffWeight = isDiff(p => p.weight);
+    const specMaps = items.map(item => new Map(getProductSpecRows(item).map(row => [row.label, row.value])));
+    const specLabels = [...new Set(specMaps.flatMap(map => [...map.keys()]))];
+    const compareRows = [
+      { label: 'ราคา', values: items.map(item => `฿${item.price.toLocaleString()}`), price: true },
+      { label: 'แบรนด์ / หมวดหมู่', values: items.map(item => `${item.brand} • ${item.category}`) },
+      ...specLabels.map(label => ({ label, values: specMaps.map(map => map.get(label) || 'ไม่เกี่ยวข้อง') })),
+      { label: 'จุดเด่นสำคัญ', values: items.map(item => (item.pros || []).slice(0, 3)) , list: true }
+    ];
 
     let html = `
       <table class="compare-table">
@@ -739,57 +885,27 @@
           <tr>
             <th class="param-col">คุณสมบัติ / สินค้า</th>
             ${items.map(it => `
-              <td class="product-col">
+              <th scope="col" class="product-col">
                 <div class="compare-product-header">
                   <img src="${it.image || 'assets/placeholders/laptop.svg'}" alt="${escapeHtml(it.name)}" class="compare-product-thumb">
                   <span class="compare-product-name">${escapeHtml(it.name)}</span>
                   <button type="button" class="relax-btn" data-remove-compare="${it.id}">นำออก</button>
                 </div>
-              </td>
+              </th>
             `).join('')}
           </tr>
         </thead>
         <tbody>
-          <tr class="${diffPrice ? 'compare-diff-highlight' : ''}">
-            <th class="param-col">ราคาจำหน่าย (THB)</th>
-            ${items.map(it => `<td><strong style="font-family: var(--font-mono); font-size: 1.1rem;">฿${it.price.toLocaleString()}</strong></td>`).join('')}
-          </tr>
-          <tr>
-            <th class="param-col">แบรนด์ / หมวดหมู่</th>
-            ${items.map(it => `<td>${escapeHtml(it.brand)} • ${escapeHtml(it.category)}</td>`).join('')}
-          </tr>
-          <tr class="${diffCpu ? 'compare-diff-highlight' : ''}">
-            <th class="param-col">ซีพียู (CPU)</th>
-            ${items.map(it => `<td>${escapeHtml(it.cpu || '-')}</td>`).join('')}
-          </tr>
-          <tr class="${diffGpu ? 'compare-diff-highlight' : ''}">
-            <th class="param-col">การ์ดจอ (GPU)</th>
-            ${items.map(it => `<td>${escapeHtml(it.gpu || '-')}</td>`).join('')}
-          </tr>
-          <tr class="${diffRam ? 'compare-diff-highlight' : ''}">
-            <th class="param-col">RAM</th>
-            ${items.map(it => `<td>${it.ram ? `${it.ram}GB ${it.ramType || ''}` : '-'}</td>`).join('')}
-          </tr>
-          <tr class="${diffStorage ? 'compare-diff-highlight' : ''}">
-            <th class="param-col">พื้นที่จัดเก็บ (SSD)</th>
-            ${items.map(it => `<td>${it.storage ? `${it.storage >= 1000 ? `${it.storage / 1000}TB` : `${it.storage}GB`} (${it.storageType || ''})` : '-'}</td>`).join('')}
-          </tr>
-          <tr class="${diffScreen ? 'compare-diff-highlight' : ''}">
-            <th class="param-col">หน้าจอแสดงผล</th>
-            ${items.map(it => `<td>${it.displaySize ? `${it.displaySize}" ${it.resolution || ''} ${it.refreshRate ? `${it.refreshRate}Hz` : ''}` : '-'}</td>`).join('')}
-          </tr>
-          <tr class="${diffWeight ? 'compare-diff-highlight' : ''}">
-            <th class="param-col">น้ำหนักตัวเครื่อง</th>
-            ${items.map(it => `<td>${it.weight ? `${it.weight} kg` : '-'}</td>`).join('')}
-          </tr>
-          <tr>
-            <th class="param-col">แบตเตอรี่</th>
-            ${items.map(it => `<td>${it.battery ? `${it.battery} Whr` : '-'}</td>`).join('')}
-          </tr>
-          <tr>
-            <th class="param-col">จุดเด่นสำคัญ</th>
-            ${items.map(it => `<td><ul style="padding-left: 1.1rem;">${(it.pros || []).map(p => `<li>${escapeHtml(p)}</li>`).join('')}</ul></td>`).join('')}
-          </tr>
+          ${compareRows.map(row => {
+            const comparableValues = row.values.map(value => Array.isArray(value) ? value.join('|') : value);
+            const different = State.highlightDiffs && new Set(comparableValues).size > 1;
+            return `<tr class="${different ? 'compare-diff-highlight' : ''}">
+              <th scope="row" class="param-col">${escapeHtml(row.label)}</th>
+              ${row.values.map(value => `<td>${row.list
+                ? `<ul class="compare-pros-list">${value.map(item => `<li>${escapeHtml(item)}</li>`).join('')}</ul>`
+                : row.price ? `<strong class="compare-price">${escapeHtml(value)}</strong>` : escapeHtml(value)}</td>`).join('')}
+            </tr>`;
+          }).join('')}
         </tbody>
       </table>
     `;
@@ -884,7 +1000,7 @@
     DOM.searchForm.addEventListener('submit', e => {
       e.preventDefault();
       const query = DOM.searchInput.value.trim();
-      executeSearch(query);
+      beginSearch(query);
     });
 
     // Clear Search Input
@@ -896,7 +1012,7 @@
       DOM.searchInput.value = '';
       DOM.searchClearBtn.style.display = 'none';
       DOM.searchInput.focus();
-      executeSearch('');
+      showCatalog();
     });
 
     // Prompt Chips
@@ -905,7 +1021,7 @@
         const q = chip.dataset.query;
         DOM.searchInput.value = q;
         DOM.searchClearBtn.style.display = 'block';
-        executeSearch(q);
+        beginSearch(q);
       });
     });
 
@@ -914,20 +1030,29 @@
       const btn = e.target.closest('.cat-btn');
       if (!btn) return;
       const cat = btn.dataset.cat;
-      executeSearch(DOM.searchInput.value.trim(), cat);
+      DOM.searchInput.value = '';
+      DOM.searchClearBtn.style.display = 'none';
+      if (!cat) {
+        showCatalog();
+      } else {
+        executeSearch('', cat, { resetSort: true, resetFilters: true });
+      }
+      if (State.activeView !== 'search') navigateTo('search');
     });
 
     // Navigation Links
     document.querySelectorAll('[data-view]').forEach(link => {
       link.addEventListener('click', e => {
+        e.preventDefault();
         const view = link.dataset.view;
-        switchView(view);
+        navigateTo(view);
       });
     });
 
     // Mobile Menu Toggle
     DOM.mobileMenuBtn.addEventListener('click', () => {
-      DOM.mainNav.classList.toggle('mobile-open');
+      const isOpen = DOM.mainNav.classList.toggle('mobile-open');
+      DOM.mobileMenuBtn.setAttribute('aria-expanded', String(isOpen));
     });
 
     // Sort Dropdown
@@ -974,18 +1099,29 @@
       }
     });
 
+    DOM.filterStorageList.addEventListener('change', e => updateSetFilter(e, 'filterStorage', State.filters.storage));
+    DOM.filterDisplayList.addEventListener('change', e => updateSetFilter(e, 'filterDisplay', State.filters.display));
+    DOM.filterRefreshList.addEventListener('change', e => updateSetFilter(e, 'filterRefresh', State.filters.refresh));
+
     DOM.filterResetBtn.addEventListener('click', resetAllFilters);
+
+    DOM.activeFiltersSummary.addEventListener('click', e => {
+      const removeBtn = e.target.closest('[data-remove-filter]');
+      if (!removeBtn) return;
+      removeActiveFilter(removeBtn.dataset.removeFilter, removeBtn.dataset.value || '');
+    });
 
     // Mobile Filter Trigger & Close
     DOM.mobileFilterTrigger.addEventListener('click', () => {
-      DOM.filterSidebar.classList.toggle('mobile-open');
+      openFilterDrawer();
     });
 
     if (DOM.filterCloseBtn) {
       DOM.filterCloseBtn.addEventListener('click', () => {
-        DOM.filterSidebar.classList.remove('mobile-open');
+        closeFilterDrawer();
       });
     }
+    DOM.filterOverlay.addEventListener('click', closeFilterDrawer);
 
     // Product Grid Card Actions (Delegation)
     DOM.productGrid.addEventListener('click', e => {
@@ -1015,7 +1151,7 @@
 
     // Floating Compare Dock Actions
     DOM.compareDockOpenBtn.addEventListener('click', () => {
-      switchView('compare');
+      navigateTo('compare');
     });
 
     DOM.compareDockClearBtn.addEventListener('click', () => {
@@ -1026,7 +1162,8 @@
     // Compare View Actions
     DOM.btnToggleDiffs.addEventListener('click', () => {
       State.highlightDiffs = !State.highlightDiffs;
-      DOM.btnToggleDiffs.style.backgroundColor = State.highlightDiffs ? 'var(--color-primary-light)' : '';
+      DOM.btnToggleDiffs.classList.toggle('selected', State.highlightDiffs);
+      DOM.btnToggleDiffs.setAttribute('aria-pressed', String(State.highlightDiffs));
       renderCompareTable();
     });
 
@@ -1044,16 +1181,33 @@
     window.addEventListener('keydown', e => {
       if (e.key === 'Escape' && DOM.drawerBackdrop.classList.contains('open')) {
         closeProductDrawer();
+      } else if (e.key === 'Escape' && DOM.filterSidebar.classList.contains('mobile-open')) {
+        closeFilterDrawer();
+      } else if (e.key === 'Tab' && DOM.drawerBackdrop.classList.contains('open')) {
+        trapDrawerFocus(e);
       }
     });
+
+    window.addEventListener('hashchange', () => handleRouting(false));
   }
 
-  function resetAllFilters() {
+  function updateSetFilter(event, inputName, targetSet) {
+    if (event.target.name !== inputName) return;
+    const value = Number(event.target.value);
+    if (event.target.checked) targetSet.add(value);
+    else targetSet.delete(value);
+    applyFiltersAndSort();
+  }
+
+  function resetAllFilters(shouldRender = true) {
     State.filters.priceMin = null;
     State.filters.priceMax = null;
     State.filters.brands.clear();
     State.filters.ram.clear();
     State.filters.gpu.clear();
+    State.filters.storage.clear();
+    State.filters.display.clear();
+    State.filters.refresh.clear();
 
     DOM.filterPriceMin.value = '';
     DOM.filterPriceMax.value = '';
@@ -1062,12 +1216,168 @@
       cb.checked = false;
     });
 
+    if (shouldRender) applyFiltersAndSort();
+  }
+
+  function renderActiveFilters() {
+    const chips = [];
+    if (State.filters.priceMin !== null) chips.push({ key: 'priceMin', label: `ตั้งแต่ ฿${State.filters.priceMin.toLocaleString()}` });
+    if (State.filters.priceMax !== null) chips.push({ key: 'priceMax', label: `ไม่เกิน ฿${State.filters.priceMax.toLocaleString()}` });
+    State.filters.brands.forEach(value => chips.push({ key: 'brand', value, label: value }));
+    State.filters.ram.forEach(value => chips.push({ key: 'ram', value, label: `RAM ${value}GB` }));
+    State.filters.gpu.forEach(value => chips.push({ key: 'gpu', value, label: value }));
+    State.filters.storage.forEach(value => chips.push({ key: 'storage', value, label: `${formatStorage(value)} ขึ้นไป` }));
+    State.filters.display.forEach(value => chips.push({ key: 'display', value, label: `${value} นิ้วขึ้นไป` }));
+    State.filters.refresh.forEach(value => chips.push({ key: 'refresh', value, label: `${value}Hz ขึ้นไป` }));
+
+    if (chips.length === 0) {
+      DOM.activeFiltersSummary.hidden = true;
+      DOM.activeFiltersSummary.innerHTML = '';
+      return;
+    }
+
+    DOM.activeFiltersSummary.hidden = false;
+    DOM.activeFiltersSummary.innerHTML = `
+      <span class="active-filters-label">ตัวกรองที่ใช้:</span>
+      ${chips.map(chip => `<button type="button" class="active-filter-chip" data-remove-filter="${chip.key}" data-value="${escapeHtml(chip.value ?? '')}" aria-label="ลบตัวกรอง ${escapeHtml(chip.label)}">${escapeHtml(chip.label)} <span aria-hidden="true">×</span></button>`).join('')}
+      <button type="button" class="clear-active-filters" data-remove-filter="all">ล้างทั้งหมด</button>
+    `;
+  }
+
+  function removeActiveFilter(key, rawValue) {
+    const config = {
+      brand: { set: State.filters.brands, name: 'filterBrand', value: rawValue },
+      ram: { set: State.filters.ram, name: 'filterRam', value: rawValue },
+      gpu: { set: State.filters.gpu, name: 'filterGpu', value: rawValue },
+      storage: { set: State.filters.storage, name: 'filterStorage', value: Number(rawValue) },
+      display: { set: State.filters.display, name: 'filterDisplay', value: Number(rawValue) },
+      refresh: { set: State.filters.refresh, name: 'filterRefresh', value: Number(rawValue) }
+    };
+
+    if (key === 'all') {
+      resetAllFilters();
+      return;
+    }
+    if (key === 'priceMin' || key === 'priceMax') {
+      State.filters[key] = null;
+      DOM[key === 'priceMin' ? 'filterPriceMin' : 'filterPriceMax'].value = '';
+    } else if (config[key]) {
+      config[key].set.delete(config[key].value);
+      const input = DOM.filterSidebar.querySelector(`input[name="${config[key].name}"][value="${CSS.escape(String(rawValue))}"]`);
+      if (input) input.checked = false;
+    }
     applyFiltersAndSort();
+  }
+
+  function openFilterDrawer() {
+    DOM.filterSidebar.classList.add('mobile-open');
+    DOM.filterOverlay.classList.add('visible');
+    document.body.classList.add('filter-drawer-open');
+    window.requestAnimationFrame(() => DOM.filterCloseBtn.focus());
+  }
+
+  function closeFilterDrawer() {
+    DOM.filterSidebar.classList.remove('mobile-open');
+    DOM.filterOverlay.classList.remove('visible');
+    document.body.classList.remove('filter-drawer-open');
+    DOM.mobileFilterTrigger.focus();
+  }
+
+  function trapDrawerFocus(event) {
+    const focusable = [...DOM.productDrawer.querySelectorAll('button, a[href], input, select, [tabindex]:not([tabindex="-1"])')]
+      .filter(element => !element.disabled && element.offsetParent !== null);
+    if (focusable.length === 0) return;
+    const first = focusable[0];
+    const last = focusable[focusable.length - 1];
+    if (event.shiftKey && document.activeElement === first) {
+      event.preventDefault();
+      last.focus();
+    } else if (!event.shiftKey && document.activeElement === last) {
+      event.preventDefault();
+      first.focus();
+    }
+  }
+
+  function showToast(message) {
+    if (toastTimer) window.clearTimeout(toastTimer);
+    DOM.appToast.textContent = message;
+    DOM.appToast.hidden = false;
+    DOM.appToast.classList.add('visible');
+    toastTimer = window.setTimeout(() => {
+      DOM.appToast.classList.remove('visible');
+      DOM.appToast.hidden = true;
+    }, 3200);
   }
 
   // ==========================================================================
   // 12. UTILITY HELPERS
   // ==========================================================================
+  function formatStorage(storage) {
+    if (!storage) return '-';
+    return storage >= 1000 ? `${storage / 1000}TB` : `${storage}GB`;
+  }
+
+  function getProductSpecRows(product) {
+    const rows = [];
+    const add = (label, value, compact = '') => {
+      if (value !== null && value !== undefined && value !== '' && value !== '-') rows.push({ label, value: String(value), compact });
+    };
+    const category = product.category;
+    const laptopLike = ['Laptop', 'Gaming Laptop', 'Desktop PC'].includes(category);
+
+    if (laptopLike) {
+      add('หน่วยประมวลผล', product.cpu, `⚙️ ${(product.cpu || '').split('(')[0].trim()}`);
+      add('ชิปกราฟิก', product.gpu, `🎮 ${product.gpuChip || (product.gpu || '').split('(')[0].trim()}`);
+      add('หน่วยความจำ', product.ram ? `${product.ram}GB ${product.ramType || ''}`.trim() : '', `RAM ${product.ram}GB`);
+      add('พื้นที่จัดเก็บ', product.storage ? `${formatStorage(product.storage)} ${product.storageType || ''}`.trim() : '', `SSD ${formatStorage(product.storage)}`);
+      add('หน้าจอ', product.displaySize ? `${product.displaySize} นิ้ว ${product.resolution || ''} ${product.refreshRate ? `${product.refreshRate}Hz` : ''}`.trim() : '', `🖥️ ${product.displaySize}\" ${product.refreshRate ? `${product.refreshRate}Hz` : ''}`.trim());
+      add('น้ำหนัก', product.weight ? `${product.weight} กิโลกรัม` : '', `⚖️ ${product.weight} kg`);
+      add('แบตเตอรี่', product.battery ? `${product.battery} Wh` : '');
+      add('ระบบปฏิบัติการ', product.operatingSystem);
+    } else if (category === 'Monitor') {
+      add('ขนาดหน้าจอ', product.displaySize ? `${product.displaySize} นิ้ว` : '', `🖥️ ${product.displaySize}\"`);
+      add('ความละเอียด', product.resolution, product.resolution);
+      add('รีเฟรชเรต', product.refreshRate ? `${product.refreshRate}Hz` : '', `↻ ${product.refreshRate}Hz`);
+      add('ชนิดพาเนล', product.panelType, product.panelType);
+      add('น้ำหนัก', product.weight ? `${product.weight} กิโลกรัม` : '');
+    } else if (category === 'SSD') {
+      const speed = (product.features || []).find(item => /mb\/s|ความเร็วอ่าน/i.test(item));
+      add('ความจุ', formatStorage(product.storage), `💾 ${formatStorage(product.storage)}`);
+      add('อินเทอร์เฟซ', product.storageType, product.storageType);
+      add('ความเร็วอ่าน/เขียน', speed, speed ? speed.replace(/^ความเร็ว/, '') : '');
+    } else if (category === 'CPU') {
+      add('รุ่นซีพียู', product.cpu, `⚙️ ${(product.cpu || '').split('(')[0].trim()}`);
+      add('จำนวนคอร์', product.cpuCores ? `${product.cpuCores} คอร์` : '', product.cpuCores ? `${product.cpuCores} Cores` : '');
+      add('ความเร็วสูงสุด', product.cpuSpeed, product.cpuSpeed);
+    } else if (category === 'GPU') {
+      add('ชิปกราฟิก', product.gpu, `🎮 ${product.gpuChip || ''}`);
+      add('หน่วยความจำกราฟิก', product.ram ? `${product.ram}GB` : '', product.ram ? `VRAM ${product.ram}GB` : '');
+      add('น้ำหนัก', product.weight ? `${Math.round(product.weight * 1000)} กรัม` : '');
+    } else if (category === 'RAM') {
+      add('ความจุ', product.ram ? `${product.ram}GB` : '', `RAM ${product.ram}GB`);
+      add('ชนิดและความเร็ว', product.ramType, product.ramType);
+    } else if (category === 'Mouse') {
+      const dpi = (product.features || []).join(' ').match(/([\d,]+)\s*DPI/i)?.[1];
+      add('น้ำหนัก', product.weight ? `${Math.round(product.weight * 1000)} กรัม` : '', `⚖️ ${Math.round(product.weight * 1000)} g`);
+      add('ความละเอียดเซ็นเซอร์', dpi ? `${dpi} DPI` : '', dpi ? `🖱️ ${dpi} DPI` : '');
+      add('แบตเตอรี่', product.battery ? `${product.battery} mAh (ชาร์จได้)` : '', product.battery ? `🔋 ${product.battery} mAh` : '');
+      add('ระบบที่รองรับ', product.operatingSystem);
+    } else if (category === 'Mechanical Keyboard') {
+      add('น้ำหนัก', product.weight ? `${Math.round(product.weight * 1000)} กรัม` : '', `⚖️ ${Math.round(product.weight * 1000)} g`);
+      add('แบตเตอรี่', product.battery ? `${product.battery} mAh` : '', product.battery ? `🔋 ${product.battery} mAh` : '');
+      add('ระบบที่รองรับ', product.operatingSystem);
+    } else if (category === 'PSU') {
+      const wattage = product.name.match(/\b(\d{3,4})W\b/i)?.[1];
+      add('กำลังไฟ', wattage ? `${wattage}W` : '', wattage ? `⚡ ${wattage}W` : '');
+      add('มาตรฐาน', product.subcategory, product.subcategory);
+    } else {
+      add('น้ำหนัก', product.weight ? `${product.weight} กิโลกรัม` : '');
+      add('ระบบที่รองรับ', product.operatingSystem);
+    }
+
+    return rows;
+  }
+
   function escapeHtml(str) {
     if (!str && str !== 0) return '';
     return String(str)

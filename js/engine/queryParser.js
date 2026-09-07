@@ -35,10 +35,14 @@ const ISEQueryParser = {
     // 5. Brand extraction
     const brand = this.extractBrand(lower);
 
-    // 6. Infer implicit priorities
+    // 6. Measure how much product intent was actually recognized. A budget by
+    // itself is not enough to prove that the user is asking for an IT product.
+    const confidence = this.measureIntentConfidence({ category, brand, budget, specs, useCase });
+
+    // 7. Infer implicit priorities
     const priority = this.inferPriority({ category, budget, specs, useCase });
 
-    // 7. Generate a human-readable interpretation badge text
+    // 8. Generate a human-readable interpretation badge text
     const interpretationText = this.buildInterpretationText({ category, budget, specs, useCase, brand });
 
     return {
@@ -49,6 +53,8 @@ const ISEQueryParser = {
       budget,
       specs,
       useCase,
+      confidence,
+      isUnderstood: confidence.isUnderstood,
       priority,
       interpretationText
     };
@@ -70,8 +76,36 @@ const ISEQueryParser = {
         refreshRate: null
       },
       useCase: null,
+      confidence: {
+        level: 'none',
+        score: 0,
+        recognizedSignals: [],
+        isUnderstood: false
+      },
+      isUnderstood: false,
       priority: 'General Relevance',
       interpretationText: 'ค้นหาทั่วไป'
+    };
+  },
+
+  measureIntentConfidence({ category, brand, budget, specs, useCase }) {
+    const signals = [];
+    if (category) signals.push('category');
+    if (brand) signals.push('brand');
+    if (useCase) signals.push('useCase');
+    if (budget && (budget.min || budget.max)) signals.push('budget');
+
+    const specCount = Object.values(specs || {}).filter(value => value !== null && value !== undefined).length;
+    if (specCount > 0) signals.push('specs');
+
+    const hasProductSignal = Boolean(category || brand || useCase || specCount > 0);
+    const score = hasProductSignal ? Math.min(100, 45 + (signals.length - 1) * 18 + Math.max(0, specCount - 1) * 7) : 0;
+
+    return {
+      level: score >= 80 ? 'high' : score >= 45 ? 'medium' : 'none',
+      score,
+      recognizedSignals: signals,
+      isUnderstood: hasProductSignal
     };
   },
 
