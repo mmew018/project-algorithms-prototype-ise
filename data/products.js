@@ -1,9 +1,8 @@
 /**
  * ISE — Intelligent Search Engine for Computer & Technology Products
- * Realistic Hardware Dataset (60+ Curated Products across 11 Categories)
- *
- * Designed with authentic specifications, realistic pricing in Thai Baht (THB),
- * and domain-specific capability ratings for multi-criteria ranking demonstrations.
+ * Static demonstration dataset (60 products across 11 categories).
+ * Specifications and prices are fixed prototype data and may not reflect current listings.
+ * Capability ratings are manually assigned for multi-criteria ranking demonstrations.
  */
 
 const ISE_PRODUCTS = [
@@ -40,7 +39,7 @@ const ISE_PRODUCTS = [
     programmingLevel: 91,
     aiWorkloadLevel: 40,
     features: ["หน้าจอ 16 นิ้ว สัดส่วน 16:10 พื้นที่โค้ดกว้าง", "CPU รหัส H แรงสูง 12 Cores", "NumberPad", "บานพับกางได้ 180 องศา"],
-    pros: ["CPU i5-13500H ประสิทธิภาพสูงเทียบเท่าระดับ Gaming", "แรม 16GB พร้อมทำงาน Multitasking ทันที", "ราคาคุ้มค่ามากในงบไม่เกิน 30,000 บาท"],
+    pros: ["CPU i5-13500H และแรม 16GB รองรับงาน Multitasking ตามขอบเขตข้อมูลชุดนี้", "ราคาอยู่ในช่วงไม่เกิน 30,000 บาท"],
     cons: ["แบตเตอรี่ 42Whr ระยะเวลาใช้งานราว 4-5 ชั่วโมง", "ไม่มีพอร์ต Thunderbolt"],
     image: "assets/placeholders/laptop.svg"
   },
@@ -175,8 +174,8 @@ const ISE_PRODUCTS = [
     productivityLevel: 94,
     programmingLevel: 95,
     aiWorkloadLevel: 55,
-    features: ["คีย์บอร์ด ThinkPad ระดับตำนาน สัมผัสการพิมพ์ยอดเยี่ยม", "TrackPoint สีแดง", "วัสดุ Carbon Fiber & Magnesium", "ระบบรักษาความปลอดภัย TPM 2.0 + Fingerprint"],
-    pros: ["แป้นพิมพ์ดีที่สุดสำหรับโปรแกรมเมอร์ที่ต้องพิมพ์ทั้งวัน", "AMD Zen 4 7840U แรงและประหยัดไฟสุดยอด", "แบตเตอรี่เปิดทำงานจริงได้ 12-14 ชั่วโมง"],
+    features: ["คีย์บอร์ด ThinkPad พร้อม TrackPoint", "TrackPoint สีแดง", "วัสดุ Carbon Fiber & Magnesium", "ระบบรักษาความปลอดภัย TPM 2.0 + Fingerprint"],
+    pros: ["คีย์บอร์ด ThinkPad เหมาะกับงานพิมพ์ต่อเนื่อง", "Ryzen 7 PRO 7840U รองรับงานหลายโปรแกรมและการพกพา", "แบตเตอรี่เปิดทำงานจริงได้ 12-14 ชั่วโมง"],
     cons: ["ราคาสูงกว่าแล็ปท็อปทั่วไปในระดับสเปกเดียวกัน", "ดีไซน์คลาสสิกอาจดูขรึมเกินไปสำหรับบางท่าน"],
     image: "assets/placeholders/laptop.svg"
   },
@@ -243,8 +242,8 @@ const ISE_PRODUCTS = [
     productivityLevel: 96,
     programmingLevel: 96,
     aiWorkloadLevel: 75,
-    features: ["ดีไซน์ไร้พัดลม (Fanless) ทำงานเงียบสนิท 0dB", "ชิป Neural Engine 16-core ในตัว M3", "ระบบเสียง 4 ลำโพง Spatial Audio", "MagSafe 3 ชาร์จแบบแม่เหล็ก"],
-    pros: ["แบตเตอรี่ใช้งานจริงได้ถึง 15-18 ชั่วโมง", "ประสิทธิภาพ Single-Core สูงมาก รัน Xcode และ Web Dev ได้ลื่นไหล", "แทร็กแพดและบิลด์ควอลิตี้ระดับพรีเมียมอันดับหนึ่ง"],
+    features: ["ดีไซน์ไร้พัดลม (Fanless)", "ชิป Neural Engine 16-core ในตัว M3", "ระบบเสียง 4 ลำโพง Spatial Audio", "MagSafe 3 ชาร์จแบบแม่เหล็ก"],
+    pros: ["แบตเตอรี่ใช้งานจริงได้ถึง 15-18 ชั่วโมง", "ประสิทธิภาพ Single-Core สูงมาก รัน Xcode และ Web Dev ได้ลื่นไหล", "แทร็กแพดและงานประกอบเน้นประสบการณ์ใช้งานระดับพรีเมียม"],
     cons: ["ต่อหน้าจอภายนอกได้สูงสุด 2 จอและต้องพับฝาเครื่อง", "อัปเกรดชิ้นส่วนภายในภายหลังไม่ได้เลย"],
     image: "assets/placeholders/laptop.svg"
   },
@@ -312,7 +311,7 @@ const ISE_PRODUCTS = [
     programmingLevel: 99,
     aiWorkloadLevel: 88,
     features: ["หน้าจอ Mini-LED Liquid Retina XDR คอนทราสต์ 1,000,000:1", "พอร์ต HDMI 2.1, ช่องอ่าน SDXC Card, Thunderbolt 4 x3", "แบตเตอรี่ใช้งานได้ยาวนานถึง 18 ชั่วโมง"],
-    pros: ["เครื่องมือเขียนโปรแกรมระดับโปรที่ดีที่สุด แรม Unified 18GB รองรับงานหนัก", "หน้าจอสวยที่สุดในโลกคอมพิวเตอร์พกพา", "ลำโพง 6 ตัวคุณภาพระดับสตูดิโอ"],
+    pros: ["Unified Memory 18GB รองรับงานพัฒนาที่ใช้ทรัพยากรสูง", "จอ Liquid Retina XDR แบบ Mini-LED ตามสเปกในชุดข้อมูล", "ลำโพง 6 ตัวคุณภาพระดับสตูดิโอ"],
     cons: ["ราคาสูง ฿74,900 เกินงบผู้ใช้ทั่วไป"],
     image: "assets/placeholders/laptop.svg"
   },
@@ -346,7 +345,7 @@ const ISE_PRODUCTS = [
     programmingLevel: 90,
     aiWorkloadLevel: 70,
     features: ["ดีไซน์มินิมอลแห่งอนาคต แทร็กแพดกระจกแบบ Seamless ไร้รอยต่อ", "น้ำหนักเบาเพียง 1.19 กก.", "ขอบจอบางพิเศษทั้ง 4 ด้าน InfinityEdge"],
-    pros: ["บิลด์งานประกอบอะลูมิเนียม CNC ชิ้นเดียวหรูหราที่สุด", "หน้าจอสัมผัส OLED 120Hz คมชัด", "พกพาสะดวกมาก"],
+    pros: ["บอดี้อะลูมิเนียม CNC ชิ้นเดียวเน้นงานประกอบระดับพรีเมียม", "หน้าจอสัมผัส OLED 120Hz", "พกพาสะดวก"],
     cons: ["ปุ่ม Function เป็นแบบทัชสัมผัส Capacitive อาจไม่ถนัดสำหรับโปรแกรมเมอร์บางกลุ่ม", "มีพอร์ต USB-C เพียง 2 พอร์ต ไม่มีช่องเสียบหูฟัง 3.5 มม."],
     image: "assets/placeholders/laptop.svg"
   },
@@ -418,7 +417,7 @@ const ISE_PRODUCTS = [
     programmingLevel: 85,
     aiWorkloadLevel: 78,
     features: ["การ์ดจอ RTX 4060 8GB ในงบไม่เกิน 35,000 บาท", "รองรับ DLSS 3 Frame Generation", "พัดลมระบายความร้อนคู่ NitroSense", "พอร์ต Thunderbolt 4"],
-    pros: ["ความคุ้มค่าด้านกราฟิกต่อราคาดีที่สุดในตลาด", "แรม DDR5 16GB สองแถวพร้อมใช้งานทันที", "มีสล็อตใส่ SSD M.2 เพิ่มได้อีก 1 ช่อง"],
+    pros: ["ได้ RTX 4060 8GB ที่ราคา ฿34,900 ในชุดข้อมูลนี้", "แรม DDR5 16GB สองแถวพร้อมใช้งานทันที", "มีสล็อตใส่ SSD M.2 เพิ่มได้อีก 1 ช่อง"],
     cons: ["หน้าจอขอบเขตสี 45% NTSC ไม่เหมาะกับงานปรับแต่งสีมืออาชีพ", "กำลังไฟการ์ดจอ 75W TGP ไม่ใช่ตัววัตต์เต็ม"],
     image: "assets/placeholders/laptop-gaming.svg"
   },
@@ -452,7 +451,7 @@ const ISE_PRODUCTS = [
     programmingLevel: 88,
     aiWorkloadLevel: 82,
     features: ["จอ IPS 100% sRGB สีตรงพร้อม G-SYNC", "ซีพียูรหัส HX 10 Cores แรงทรงพลัง", "มี MUX Switch และ Advanced Optimus", "บอดี้โครงสร้างระบายความร้อนสไตล์ Legion"],
-    pros: ["RTX 4060 วัตต์สูง 105W ขับเฟรมเรตได้ยอดเยี่ยม", "หน้าจอสีตรง 100% sRGB ทำงานกราฟิกและเล่นเกมได้ดีเยี่ยม", "แป้นพิมพ์ Full-size สัมผัสการกดดีมาก"],
+    pros: ["RTX 4060 ระบุ TGP 105W ในชุดข้อมูล", "หน้าจอครอบคลุม 100% sRGB ตามข้อมูลชุดนี้", "แป้นพิมพ์ Full-size"],
     cons: ["น้ำหนักตัวเครื่องและอแดปเตอร์ค่อนข้างมาก (เกือบ 3 กก. รวมชาร์จ)", "แบตเตอรี่เล่นเกมโหมดแบตได้ไม่นาน"],
     image: "assets/placeholders/laptop-gaming.svg"
   },
@@ -519,8 +518,8 @@ const ISE_PRODUCTS = [
     productivityLevel: 90,
     programmingLevel: 92,
     aiWorkloadLevel: 86,
-    features: ["RTX 4060 วัตต์เต็ม 140W แรงที่สุดในคลาส", "แบตเตอรี่ใหญ่สุดขีด 90Whr ใช้งานออฟฟิศได้ 9-11 ชม.", "มาตรฐานความทนทานทหาร MIL-STD-810H", "ชิป NPU AMD Ryzen AI ในตัว"],
-    pros: ["การ์ดจอปล่อยพลังงานเต็มเพดาน 140W เล่นเกม AAA ได้ปรับสุด", "แบตเตอรี่ 90Wh อึดเป็นอันดับต้นๆ ของวงการ Gaming", "จอ 100% sRGB"],
+    features: ["RTX 4060 ระบุกำลังไฟสูงสุด 140W", "แบตเตอรี่ 90Wh", "มาตรฐาน MIL-STD-810H ตามข้อมูลชุดนี้", "ชิป NPU AMD Ryzen AI ในตัว"],
+    pros: ["RTX 4060 กำลังไฟสูงสุด 140W", "แบตเตอรี่ 90Wh มีความจุสูงเมื่อเทียบกับเกมมิ่งแล็ปท็อปในชุดข้อมูล", "จอ 100% sRGB"],
     cons: ["ราคาเกินงบ 40,000 บาท", "SSD จากโรงงานเพียง 512GB (ควรอัปเกรดเพิ่ม)"],
     image: "assets/placeholders/laptop-gaming.svg"
   },
@@ -554,7 +553,7 @@ const ISE_PRODUCTS = [
     programmingLevel: 95,
     aiWorkloadLevel: 88,
     features: ["จอ 16 นิ้ว 2.5K 240Hz สว่าง 500 nits สเปกระดับเทพ", "ซีพียู i7-14700HX 20 Cores แรงเทียบเท่า PC ตั้งโต๊ะ", "ระบบระบายความร้อน Coldfront 5.0", "SSD 1TB"],
-    pros: ["หน้าจอคุณภาพสูงที่สุด สว่าง คมชัด รีเฟรชเรต 240Hz ไร้โกสต์", "งานประกอบและคีย์บอร์ดเกรดพรีเมียม", "ระบายความร้อนดีเยี่ยม"],
+    pros: ["จอ 16 นิ้ว 2.5K 240Hz ความสว่าง 500 nits", "งานประกอบและคีย์บอร์ดเกรดพรีเมียม", "ระบบระบายความร้อนรองรับฮาร์ดแวร์ประสิทธิภาพสูง"],
     cons: ["ราคาสูง 54,900 บาท", "น้ำหนักรวม 2.5 กิโลกรัม"],
     image: "assets/placeholders/laptop-gaming.svg"
   },
@@ -622,7 +621,7 @@ const ISE_PRODUCTS = [
     programmingLevel: 96,
     aiWorkloadLevel: 92,
     features: ["บอดี้อะลูมิเนียม CNC ชิ้นเดียว หนาเพียง 1.49 ซม. น้ำหนัก 1.85 กก.", "หน้าจอ ROG Nebula Display OLED 2.5K 240Hz 0.2ms", "แถบไฟ Slash Lighting ทแยงมุมฝาหลัง", "แรม 32GB ความเร็วสูง 7467MHz"],
-    pros: ["เกมมิ่งแล็ปท็อปบางเบาที่สมบูรณ์แบบที่สุดในโลกเวลานี้", "จอ OLED 240Hz สีสันและความเร็วตอบสนองไม่มีใครเทียบได้", "ระบบเสียง 6 ลำโพงพร้อมวูฟเฟอร์"],
+    pros: ["ตัวเครื่องหนา 1.49 ซม. น้ำหนัก 1.85 กก.", "จอ OLED 2.5K 240Hz ตอบสนอง 0.2ms ตามสเปกในชุดข้อมูล", "ระบบเสียง 6 ลำโพงพร้อมวูฟเฟอร์"],
     cons: ["ราคาสูง ฿79,900", "แรมเป็นแบบบัดกรีติดบอร์ด"],
     image: "assets/placeholders/laptop-gaming.svg"
   },
@@ -655,7 +654,7 @@ const ISE_PRODUCTS = [
     programmingLevel: 88,
     aiWorkloadLevel: 0,
     features: ["จอ 27 นิ้ว ความละเอียด 2K 180Hz Fast IPS 1ms (GtG)", "ASUS Extreme Low Motion Blur (ELMB Sync)", "รองรับ AMD FreeSync Premium และ G-SYNC Compatible", "ขอบเขตสีกว้าง 130% sRGB"],
-    pros: ["รีเฟรชเรตสูง 180Hz ภาพลื่นไหลมาก ไร้อาการฉีกขาด", "ความละเอียด 2K บนขนาด 27 นิ้ว เป็น Sweet Spot ความคมชัดและไม่กินสเปกเกินไป", "ราคา ฿8,500 ถือว่าคุ้มค่ามาก"],
+    pros: ["รีเฟรชเรตสูง 180Hz และรองรับ Adaptive Sync", "ความละเอียด 2K บนขนาด 27 นิ้ว", "ราคาในชุดข้อมูลสาธิต ฿8,500"],
     cons: ["ความสว่าง 250 nits เพียงพอกับในห้องทั่วไปแต่ไม่สว่างจ้า", "ขาตั้งปรับขึ้นลงความสูงไม่ได้ (ปรับได้เฉพาะก้มเงย)"],
     image: "assets/placeholders/monitor.svg"
   },
@@ -684,7 +683,7 @@ const ISE_PRODUCTS = [
     programmingLevel: 90,
     aiWorkloadLevel: 0,
     features: ["จอ 27 นิ้ว QHD 165Hz 1ms IPS", "ขาตั้ง Ergonomic ปรับระดับความสูง ก้มเงย และหมุนแนวตั้ง 90 องศาได้", "รองรับ NVIDIA G-Sync Compatible และ AMD FreeSync", "HDR10 พร้อมความสว่าง 300 nits"],
-    pros: ["ขาตั้งปรับได้ครบทุกทิศทาง หมุนตั้งโค้ด 90 องศาได้ทันที", "พาเนล LG IPS ให้มุมมองกว้างและสีสันสมจริง 99% sRGB", "การตอบสนอง 1ms GtG แท้"],
+    pros: ["ขาตั้งปรับได้หลายทิศทางและหมุนแนวตั้งได้", "พาเนล IPS ระบุขอบเขตสี 99% sRGB ในชุดข้อมูล", "ระบุเวลาตอบสนอง 1ms GtG ในชุดข้อมูล"],
     cons: ["Contrast Ratio ของ IPS อยู่ที่ราว 1000:1 ฉากมืดสนิทจะไม่ดำลึกเท่า VA หรือ OLED"],
     image: "assets/placeholders/monitor.svg"
   },
@@ -742,7 +741,7 @@ const ISE_PRODUCTS = [
     programmingLevel: 84,
     aiWorkloadLevel: 0,
     features: ["จอ 27 นิ้ว Fast IPS 2K ในราคาเพียง 6,990 บาท", "รีเฟรชเรต 165Hz 0.5ms MPRT", "AMD FreeSync Premium"],
-    pros: ["ราคาถูกที่สุดสำหรับจอ 27 นิ้ว 2K 165Hz พาเนล Fast IPS", "ดีไซน์ขอบบาง 3 ด้าน"],
+    pros: ["ราคา ฿6,990 ต่ำที่สุดในกลุ่มจอ 27 นิ้ว 2K 165Hz ของชุดข้อมูล", "ดีไซน์ขอบบาง 3 ด้าน"],
     cons: ["ขาตั้งปรับได้แค่ก้มเงย", "ปุ่ม OSD ด้านหลังกดยากเล็กน้อย"],
     image: "assets/placeholders/monitor.svg"
   },
@@ -800,7 +799,7 @@ const ISE_PRODUCTS = [
     programmingLevel: 96,
     aiWorkloadLevel: 0,
     features: ["เทคโนโลยี IPS Black ให้ Contrast ลึก 2000:1 สีดำลึกกว่า IPS ทั่วไป 2 เท่า", "เซ็นเซอร์ปรับแสงสว่างอัตโนมัติตามแสงห้อง", "พอร์ตเชื่อมต่อครบครันพร้อม DP Daisy Chain", "รีเฟรชเรต 120Hz สบายตา"],
-    pros: ["คุณภาพพาเนลและการแสดงผลสีดำยอดเยี่ยมที่สุดในสาย IPS", "ดีไซน์หรูหรา ขาตั้งปรับได้ครบ 4 ทิศทาง", "ถนอมสายตาสำหรับคนเขียนโค้ดและนั่งจ้องทั้งวัน"],
+    pros: ["พาเนล IPS Black ระบุ Contrast 2000:1", "ดีไซน์หรูหรา ขาตั้งปรับได้ครบ 4 ทิศทาง", "ถนอมสายตาสำหรับคนเขียนโค้ดและนั่งจ้องทั้งวัน"],
     cons: ["รีเฟรชเรต 120Hz (ไม่ถึง 144Hz) และไม่มีฟีเจอร์สำหรับเกมเมอร์โดยเฉพาะ", "ราคาสูง ฿13,900"],
     image: "assets/placeholders/monitor.svg"
   },
@@ -829,7 +828,7 @@ const ISE_PRODUCTS = [
     programmingLevel: 92,
     aiWorkloadLevel: 0,
     features: ["ความละเอียด 4K UHD คมชัดระดับพิกเซลไม่แตก", "พอร์ต HDMI 2.1 รองรับ PS5 / Xbox Series X 4K 120Hz", "ไฟ CoreSync ด้านหลังส่องสะท้อนผนัง"],
-    pros: ["คมชัดมาก เหมาะกับทั้งคอนโซลและพีซีการ์ดจอแรง", "รีเฟรชเรต 144Hz บน 4K แท้"],
+    pros: ["ความละเอียด 4K สำหรับคอนโซลและพีซี", "รีเฟรชเรตสูงสุด 144Hz ตามชุดข้อมูล"],
     cons: ["ต้องการการ์ดจอระดับ RTX 4070 Ti หรือ 4080 ขึ้นไปเพื่อขับเกม 4K"],
     image: "assets/placeholders/monitor.svg"
   },
@@ -863,7 +862,7 @@ const ISE_PRODUCTS = [
     programmingLevel: 94,
     aiWorkloadLevel: 88,
     features: ["ความเร็วอ่านสูงสุด 7,000 MB/s และเขียน 6,000 MB/s", "คอนโทรลเลอร์ Phison E18 พร้อม DRAM Cache 1GB DDR4", "แผ่นระบายความร้อน กราฟีน-อะลูมิเนียม ขนาดบางในตัว", "ความทนทาน 800 TBW รับประกัน 5 ปี"],
-    pros: ["เสถียรภาพความเร็วสม่ำเสมอด้วยชิปคอนโทรลเลอร์ Phison E18 รุ่นท็อป", "มี DRAM Cache แท้ช่วยให้รัน DirectStorage ในเกมและคอมไพล์โค้ดได้เร็วมาก", "ราคา ฿3,290 คุ้มค่าที่สุดในกลุ่มความเร็ว 7,000 MB/s"],
+    pros: ["ใช้คอนโทรลเลอร์ Phison E18", "มี DRAM Cache สำหรับภาระงานอ่านเขียนต่อเนื่อง", "ราคา ฿3,290 ในกลุ่มความเร็วอ่าน 7,000 MB/s ของชุดข้อมูล"],
     cons: ["ควรมีฮีตซิงก์ของเมนบอร์ดประกบเพิ่มเพื่อคุมอุณหภูมิเมื่อโหลดต่อเนื่อง"],
     image: "assets/placeholders/ssd.svg"
   },
@@ -893,7 +892,7 @@ const ISE_PRODUCTS = [
     programmingLevel: 95,
     aiWorkloadLevel: 90,
     features: ["ความเร็วอ่าน 7,300 MB/s เขียน 6,300 MB/s", "สุ่มอ่านข้อมูลเร็วถึง 1,200,000 IOPS", "ซอฟต์แวร์ WD_BLACK Dashboard พร้อม Game Mode 2.0 ลดอาการกระตุกตอนโหลดฉาก", "DRAM Cache DDR4 ในตัว"],
-    pros: ["หนึ่งใน SSD ที่เร็วที่สุดสำหรับเล่นเกมระดับโลก", "Game Mode 2.0 ปรับแต่งการคาดการณ์การโหลดไฟล์เกมล่วงหน้า", "ความเสถียรและชื่อเสียงแบรนด์ WD Black"],
+    pros: ["ความเร็วอ่าน 7,300 MB/s และเขียน 6,300 MB/s ตามข้อมูลชุดนี้", "Game Mode 2.0 ปรับแต่งการคาดการณ์การโหลดไฟล์เกมล่วงหน้า", "ความเสถียรและชื่อเสียงแบรนด์ WD Black"],
     cons: ["ราคา ฿3,790 สูงกว่า Kingston KC3000 เล็กน้อย"],
     image: "assets/placeholders/ssd.svg"
   },
@@ -922,9 +921,9 @@ const ISE_PRODUCTS = [
     productivityLevel: 98,
     programmingLevel: 97,
     aiWorkloadLevel: 94,
-    features: ["ความเร็วอ่าน 7,450 MB/s เขียน 6,900 MB/s ชนเพดาน PCIe 4.0", "คอนโทรลเลอร์ Samsung Pascal 8nm ประหยัดไฟและจัดการความร้อนดีขึ้น 50%", "Samsung Magician ซอฟต์แวร์จัดการไดรฟ์ที่ดีที่สุดในวงการ", "DRAM Cache 1GB LPDDR4"],
-    pros: ["ประสิทธิภาพ Random 4K และ IOPS สูงที่สุดในกลุ่ม Gen4", "การจัดการความร้อนและพลังงานทำได้ดีเยี่ยม", "ความน่าเชื่อถือและเฟิร์มแวร์นิ่งมาก"],
-    cons: ["ราคาสูงที่สุดในระดับความจุ 1TB"],
+    features: ["ความเร็วอ่าน 7,450 MB/s เขียน 6,900 MB/s", "คอนโทรลเลอร์ Samsung Pascal 8nm", "Samsung Magician สำหรับจัดการและตรวจสอบไดรฟ์", "DRAM Cache 1GB LPDDR4"],
+    pros: ["ระบุความเร็วอ่าน 7,450 MB/s และเขียน 6,900 MB/s", "มีระบบจัดการความร้อนและพลังงาน", "รองรับการตรวจสอบไดรฟ์ผ่าน Samsung Magician"],
+    cons: ["ราคา ฿4,190 สูงกว่า SSD 1TB หลายรุ่นในชุดข้อมูล"],
     image: "assets/placeholders/ssd.svg"
   },
   {
@@ -1079,7 +1078,7 @@ const ISE_PRODUCTS = [
     programmingLevel: 99,
     aiWorkloadLevel: 96,
     features: ["16 Cores 32 Threads สถาปัตยกรรม Zen 4 5nm", "รองรับชุดคำสั่ง AVX-512 ในตัว เร่งความเร็วคำนวณ Tensor/AI ได้อย่างก้าวกระโดด", "แคชรวมขนาดมหึมา 80MB (L2+L3)", "ซ็อกเก็ต AM5 รองรับ DDR5 และ PCIe 5.0"],
-    pros: ["ประสิทธิภาพการรันชุดคำสั่ง AVX-512 สำหรับ AI/Machine Learning เหนือกว่าคู่แข่งชัดเจน", "คอมไพล์โปรเจกต์ขนาดใหญ่เช่น Chromium / Linux Kernel ได้เร็วที่สุด", "แพลตฟอร์ม AM5 อัปเกรดได้ยาวนานถึงปี 2027"],
+    pros: ["รองรับ AVX-512 สำหรับงานคำนวณที่ใช้ชุดคำสั่งนี้", "16 คอร์ 32 เธรด เหมาะกับงานคอมไพล์และประมวลผลหลายเธรด", "แพลตฟอร์ม AM5 รองรับการอัปเกรดในอนาคต"],
     cons: ["กินไฟและแผ่ความร้อนสูง ต้องการชุดน้ำระบายความร้อน 360mm ขึ้นไป", "ไม่มีพัดลมแถมมาในกล่อง"],
     image: "assets/placeholders/cpu.svg"
   },
@@ -1110,7 +1109,7 @@ const ISE_PRODUCTS = [
     productivityLevel: 96,
     programmingLevel: 96,
     aiWorkloadLevel: 91,
-    features: ["โครงสร้างไฮบริด 20 คอร์ 28 เธรด เพิ่ม E-Cores 4 คอร์จากรุ่นก่อน", "Intel Deep Learning Boost (DL Boost / VNNI)", "เอนจิน Intel QuickSync ถอดรหัสวิดีโอระดับฮาร์ดแวร์อันดับหนึ่ง", "รองรับทั้งแรม DDR4 และ DDR5"],
+    features: ["โครงสร้างไฮบริด 20 คอร์ 28 เธรด เพิ่ม E-Cores 4 คอร์จากรุ่นก่อน", "Intel Deep Learning Boost (DL Boost / VNNI)", "Intel Quick Sync รองรับการเข้ารหัสและถอดรหัสวิดีโอด้วยฮาร์ดแวร์", "รองรับทั้งแรม DDR4 และ DDR5"],
     pros: ["พลังมัลติคอร์ 28 เธรดสูงมากในราคา ฿16,500", "รองรับ Intel DL Boost เร่งสปีดงานประมวลผลข้อมูล AI", "เล่นเกมระดับแนวหน้าสูสีกับ i9"],
     cons: ["กินไฟสูงสุดเกิน 250W เมื่อปลดล็อกเพดานพลังงาน", "ต้องการระบบระบายความร้อนที่มีประสิทธิภาพสูง"],
     image: "assets/placeholders/cpu.svg"
@@ -1143,8 +1142,8 @@ const ISE_PRODUCTS = [
     programmingLevel: 98,
     aiWorkloadLevel: 95,
     features: ["ความเร็วสัญญาณนาฬิกาสูงสุด 6.0 GHz ทะลุขีดจำกัด", "24 คอร์ 32 เธรด สำหรับงานคำนวณสเกลใหญ่", "Intel Application Optimization (APO)", "Intel XTU ปรับแต่งโอเวอร์คล็อก"],
-    pros: ["ความเร็ว Single-Core สูงที่สุดในประวัติศาสตร์ 6.0 GHz", "ประสิทธิภาพการประมวลผลคำนวณเบ็ดเสร็จรอบด้านยอดเยี่ยม"],
-    cons: ["การใช้พลังงานและความร้อนสูงมากที่สุด (PL2 สูงสุด 253W+)", "ราคาสูง"],
+    pros: ["ความเร็ว Boost สูงสุด 6.0 GHz", "ประสิทธิภาพการประมวลผลหลายรูปแบบในระดับสูง"],
+    cons: ["กำลังไฟสูงสุดระบุ 253W+ จึงต้องวางแผนระบบระบายความร้อน", "ราคาสูง"],
     image: "assets/placeholders/cpu.svg"
   },
   {
@@ -1174,8 +1173,8 @@ const ISE_PRODUCTS = [
     productivityLevel: 84,
     programmingLevel: 86,
     aiWorkloadLevel: 78,
-    features: ["เทคโนโลยี 3D V-Cache ซ้อนแคช L3 ขนาดมหึมา 96MB", "ซีพียูที่ทำเฟรมเรตเกมเฉลี่ยสูงที่สุดและ 1% Low นิ่งที่สุดในโลก", "กินไฟต่ำมากเพียง 50-80W ขณะเล่นเกม (TDP รวม 120W)"],
-    pros: ["ซีพียูเล่นเกมอันดับหนึ่งของโลก ชนะซีพียูที่แพงกว่าสองเท่าในหลายเกม", "กินไฟน้อยมาก พัดลมลมทั่วไปหรือชุดน้ำ 240mm ก็เอาอยู่สบายๆ"],
+    features: ["เทคโนโลยี 3D V-Cache พร้อมแคช L3 ขนาด 96MB", "ออกแบบมาเพื่อเพิ่มประสิทธิภาพเกมและความสม่ำเสมอของเฟรมเรต", "TDP รวม 120W"],
+    pros: ["3D V-Cache พร้อม L3 96MB ออกแบบมาเพื่อเพิ่มประสิทธิภาพเกม", "มี 8 คอร์ 16 เธรด และ TDP 120W"],
     cons: ["มี 8 Cores 16 Threads งาน AI หรือคอมไพล์มัลติเธรดหนักๆ จะเป็นรอง Ryzen 9 7950X หรือ i7-14700K", "ไม่รองรับการโอเวอร์คล็อกตัวคูณแบบดั้งเดิม"],
     image: "assets/placeholders/cpu.svg"
   },
@@ -1271,7 +1270,7 @@ const ISE_PRODUCTS = [
     programmingLevel: 95,
     aiWorkloadLevel: 90,
     features: ["12 Cores 24 Threads พร้อมคำสั่ง AVX-512", "ความเร็วบูสต์ 5.6 GHz แคช 76MB", "ประมวลผลข้อมูล AI ขนาดกลางและคอมไพล์โค้ดได้รวดเร็ว"],
-    pros: ["ราคา ฿15,900 ได้ 12 คอร์ 24 เธรด คุ้มค่ามากสำหรับงาน Workstation", "รองรับ AVX-512"],
+    pros: ["12 คอร์ 24 เธรดที่ราคา ฿15,900 ในชุดข้อมูลสาธิต", "รองรับ AVX-512"],
     cons: ["TDP 170W ต้องการระบบระบายความร้อนระดับ 240mm ขึ้นไป"],
     image: "assets/placeholders/cpu.svg"
   },
@@ -1303,7 +1302,7 @@ const ISE_PRODUCTS = [
     programmingLevel: 92,
     aiWorkloadLevel: 80,
     features: ["14 คอร์ 20 เธรด ปรับปรุงประสิทธิภาพด้านเกมและมัลติทาสก์", "โอเวอร์คล็อกได้อิสระบนเมนบอร์ด Z790", "มี UHD 770 พร้อม QuickSync"],
-    pros: ["ซีพียูระดับกลางบนที่ลงตัวที่สุดสำหรับทั้งเล่นเกมและเขียนโค้ด", "ความเสถียรสูง"],
+    pros: ["14 คอร์ 20 เธรด รองรับทั้งงานเล่นเกมและงานพัฒนา", "รองรับแรม DDR4 และ DDR5"],
     cons: ["กินไฟมากกว่ารุ่น Non-K (TDP 125W Base, 181W Turbo)"],
     image: "assets/placeholders/cpu.svg"
   },
@@ -1367,7 +1366,7 @@ const ISE_PRODUCTS = [
     programmingLevel: 92,
     aiWorkloadLevel: 93,
     features: ["CUDA Cores มากถึง 7,168 คอร์ แรงขึ้นจาก 4070 เดิมถึง 20%", "แรม 12GB GDDR6X ความเร็วสูง 21 Gbps", "ระบบระบายความร้อน WINDFORCE พัดลม 3 ตัว ใบพัดหมุนสลับทิศ", "Dual BIOS และแผ่นโลหะป้องกันการบิดงอด้านหลัง"],
-    pros: ["ประสิทธิภาพต่อราคาดีที่สุดสำหรับการเล่นเกมระดับ 2K Ultra 144Hz+", "VRAM 12GB เพียงพอกับโมเดล AI ยอดนิยม (SDXL, LLaMA-3-8B 4-bit)", "ทำงาน 3D ใน Blender รวดเร็วด้วย OptiX"],
+    pros: ["VRAM 12GB และ 7,168 CUDA Cores เหมาะกับเกม 1440p และงาน CUDA ตามภาระงาน", "VRAM 12GB รองรับโมเดล AI บางประเภทตามขนาดและการตั้งค่า", "ทำงาน 3D ใน Blender ด้วย OptiX"],
     cons: ["ใช้หัวต่อไฟ 16-pin 12VHPWR ต้องจัดสายในเคสอย่างระมัดระวัง"],
     image: "assets/placeholders/gpu.svg"
   },
@@ -1390,14 +1389,14 @@ const ISE_PRODUCTS = [
     weight: 1.45,
     battery: 0,
     operatingSystem: "-",
-    useCases: ["4K High-FPS Gaming", "Local LLM 70B Quantized", "AI Training", "Industrial 3D Animation"],
+    useCases: ["4K Gaming", "Local AI Experimentation", "AI Training", "Industrial 3D Animation"],
     performanceLevel: 98,
     gamingLevel: 99,
     productivityLevel: 98,
     programmingLevel: 95,
     aiWorkloadLevel: 97,
-    features: ["10,240 CUDA Cores และ Tensor Cores ประสิทธิภาพ AI 836 AI TOPS", "VRAM ขนาด 16GB GDDR6X แบนด์วิธกว้าง 256-bit", "ดีไซน์ GAMING SLIM บางกระชับ ไม่กินสล็อตเคสจนเกินไป", "ชุดพัดลม TORX FAN 5.0 ระบายความร้อนเงียบสนิท"],
-    pros: ["การ์ดจอระดับหัวแถว รันเกม 4K ทุกเกมได้เกิน 100 FPS ด้วย DLSS 3", "VRAM 16GB ตอบโจทย์งานเทรนโมเดล AI และรัน LLM สบายใจ", "ดีไซน์บางลงติดตั้งง่าย"],
+    features: ["10,240 CUDA Cores และ Tensor Cores ตามข้อมูลที่บันทึกในชุดข้อมูล", "VRAM ขนาด 16GB GDDR6X แบนด์วิธ 256-bit", "ดีไซน์ GAMING SLIM", "ชุดพัดลม TORX FAN 5.0"],
+    pros: ["ออกแบบมาสำหรับงานกราฟิกและเกมความละเอียดสูง โดยผลลัพธ์จริงขึ้นกับเกมและการตั้งค่า", "VRAM 16GB รองรับงาน AI ที่อยู่ภายในข้อจำกัดของหน่วยความจำ", "ดีไซน์บางลงเพื่อช่วยการติดตั้ง"],
     cons: ["ราคาสูง ฿41,900 และกินไฟ 320W แนะนำ PSU 850W ขึ้นไป"],
     image: "assets/placeholders/gpu.svg"
   },
@@ -1427,7 +1426,7 @@ const ISE_PRODUCTS = [
     programmingLevel: 82,
     aiWorkloadLevel: 79,
     features: ["VRAM ขนาดมหึมา 16GB ในราคาต่ำกว่า 20,000 บาท", "สถาปัตยกรรม RDNA 3 Chiplet พร้อม AMD HYPR-RX และ AFMF", "หัวต่อไฟ PCIe 8-pin มาตรฐาน 2 หัว (ไม่ต้องใช้หัวแปลง 12VHPWR)"],
-    pros: ["ประสิทธิภาพการเล่นเกมแบบ Rasterization ดิบๆ เหนือกว่า RTX 4070 ในราคาที่ถูกกว่า", "VRAM 16GB อุ่นใจในระยะยาว ไม่เจอปัญหาแรมการ์ดจอเต็ม"],
+    pros: ["VRAM 16GB รองรับเกม 1440p และงานกราฟิกตามภาระงาน", "ราคา ฿19,900 ในชุดข้อมูลนี้"],
     cons: ["ประสิทธิภาพ Ray Tracing และงาน AI ยังตามหลังระบบ CUDA ของ NVIDIA", "กินไฟราว 260W"],
     image: "assets/placeholders/gpu.svg"
   },
@@ -1456,8 +1455,8 @@ const ISE_PRODUCTS = [
     productivityLevel: 90,
     programmingLevel: 88,
     aiWorkloadLevel: 90,
-    features: ["VRAM ใหญ่ 16GB ในราคาเข้าถึงง่ายที่สุดของ NVIDIA", "สถาปัตยกรรม Ada Lovelace พร้อม DLSS 3", "พัดลมคู่ IceStorm 2.0 ขนาดกะทัดรัด"],
-    pros: ["การ์ดจอที่คุ้มค่ามากสำหรับผู้ต้องการรัน Local AI (LLaMA-3, SDXL) ที่ต้องการ VRAM 16GB ในงบต่ำกว่า 20,000 บาท", "กินไฟเพียง 165W"],
+    features: ["VRAM 16GB ที่ราคา ฿17,500 ในชุดข้อมูลนี้", "สถาปัตยกรรม Ada Lovelace พร้อม DLSS 3", "พัดลมคู่ IceStorm 2.0 ขนาดกะทัดรัด"],
+    pros: ["VRAM 16GB สำหรับทดลองงาน Local AI โดยประสิทธิภาพจริงขึ้นกับโมเดลและการตั้งค่า", "กำลังไฟที่ระบุในชุดข้อมูล 165W"],
     cons: ["แบนด์วิธแรม 128-bit ในการเล่นเกมระดับ 2K/4K ยังจำกัด"],
     image: "assets/placeholders/gpu.svg"
   },
@@ -1480,14 +1479,14 @@ const ISE_PRODUCTS = [
     weight: 2.50,
     battery: 0,
     operatingSystem: "-",
-    useCases: ["Extreme AI Training", "Local 70B LLMs", "4K Ultra Ray Tracing 144Hz", "VFX Rendering"],
+    useCases: ["AI Training", "Local AI Workloads", "4K Ray Tracing Gaming", "VFX Rendering"],
     performanceLevel: 100,
     gamingLevel: 100,
     productivityLevel: 100,
     programmingLevel: 98,
     aiWorkloadLevel: 100,
-    features: ["16,384 CUDA Cores ทรงพลังที่สุดในประวัติศาสตร์", "VRAM 24GB GDDR6X แบนด์วิธระดับ 1 TB/s", "โครงสร้างฮีตซิงก์ไอน้ำ Vapor Chamber ขนาด 3.5 สล็อต"],
-    pros: ["การ์ดจอที่ทรงพลังที่สุดในโลกสำหรับทั้งเกม 4K และการเทรน AI", "VRAM 24GB รันโมเดล AI ขนาดใหญ่ได้โดยไม่ต้องลดทอนคุณภาพ"],
+    features: ["16,384 CUDA Cores", "VRAM 24GB GDDR6X แบนด์วิธระดับ 1 TB/s", "โครงสร้างฮีตซิงก์ไอน้ำ Vapor Chamber ขนาด 3.5 สล็อต"],
+    pros: ["รองรับเกม 4K และงาน AI ที่ต้องใช้ VRAM สูง โดยผลขึ้นกับซอฟต์แวร์และภาระงาน", "VRAM 24GB รองรับโมเดล AI ขนาดใหญ่ตามรูปแบบและการตั้งค่า"],
     cons: ["ราคาสูงมาก ฿79,900", "ขนาดใหญ่มาก น้ำหนัก 2.5 กิโลกรัม และกินไฟสูงสุด 450W-600W"],
     image: "assets/placeholders/gpu.svg"
   },
@@ -1521,7 +1520,7 @@ const ISE_PRODUCTS = [
     programmingLevel: 96,
     aiWorkloadLevel: 90,
     features: ["ความเร็ว 6000MHz ค่าไทมิ่งต่ำมาก CL30 (Sweet Spot ของ AMD AM5 และ Intel 14th Gen)", "ไฟ RGB 10 โซน ปรับแต่งผ่านซอฟต์แวร์ iCUE", "รองรับทั้งโปรไฟล์ Intel XMP 3.0 และ AMD EXPO"],
-    pros: ["ไทมิ่งแน่น CL30 ให้ Latency ต่ำที่สุด เฟรมเรต 1% Low ในเกมนิ่งมาก", "ความจุ 32GB เปิด IDE หลายหน้าต่าง รัน Docker หลาย Container สบาย", "ชิป SK Hynix ทนทานและเสถียร"],
+    pros: ["DDR5-6000 CL30 เน้น Latency ต่ำ", "ความจุ 32GB รองรับ IDE และ Container หลายรายการ", "ใช้ชิป SK Hynix ตามข้อมูลชุดนี้"],
     cons: ["ราคาสูงกว่าแรมบัส 5200-5600 ทั่วไป"],
     image: "assets/placeholders/ram.svg"
   },
@@ -1750,7 +1749,7 @@ const ISE_PRODUCTS = [
     programmingLevel: 0,
     aiWorkloadLevel: 0,
     features: ["นวัตกรรมจัดสายด้านข้าง (Side-Mounted Cables) เสียบสายง่ายขึ้นมาก", "มาตรฐาน ATX 3.0 พร้อมสายต่อ 12VHPWR สำหรับการ์ดจอ RTX 40 ซีรีส์", "มาตรฐานประสิทธิภาพ 80 PLUS Gold และ Cybenetics Gold", "รับประกันยาวนาน 10 ปีเต็ม"],
-    pros: ["สายออกข้างเคสทำให้การจัดสายไฟสะดวกและเนียนตาที่สุด", "พัดลม Zero RPM หยุดหมุนเมื่อโหลดต่ำ ไร้เสียงรบกวน", "คาปาซิเตอร์เกรดพรีเมียมจากญี่ปุ่น 100%"],
+    pros: ["ขั้วต่อสายด้านข้างช่วยให้จัดสายได้สะดวก", "พัดลม Zero RPM หยุดหมุนเมื่อโหลดต่ำ", "คาปาซิเตอร์จากญี่ปุ่นตามข้อมูลชุดนี้"],
     cons: ["ต้องตรวจสอบว่าเคสที่ใช้มีช่องว่างด้านข้างเพียงพอ"],
     image: "assets/placeholders/psu.svg"
   },
@@ -1778,8 +1777,8 @@ const ISE_PRODUCTS = [
     productivityLevel: 85,
     programmingLevel: 0,
     aiWorkloadLevel: 0,
-    features: ["กำลังไฟ 650W แท้ มาตรฐาน 80 PLUS Gold", "ถอดสายได้ทุกเส้น (Full Modular) สายแบนสีดำ", "พัดลม HDB 120mm เงียบ"],
-    pros: ["พาวเวอร์ 80+ Gold แท้ในราคาเพียง ฿3,190", "ขนาดกะทัดรัดจัดสายง่าย"],
+    features: ["กำลังไฟ 650W มาตรฐาน 80 PLUS Gold ตามข้อมูลชุดนี้", "ถอดสายได้ทุกเส้น (Full Modular) สายแบนสีดำ", "พัดลม HDB 120mm"],
+    pros: ["ระบุมาตรฐาน 80 PLUS Gold และราคา ฿3,190 ในชุดข้อมูล", "ขนาดกะทัดรัดช่วยจัดสาย"],
     cons: ["ยังไม่ใช่มาตรฐาน ATX 3.0 โดยตรง หากใช้การ์ดจอรุ่นท็อปต้องใช้หัวแปลง"],
     image: "assets/placeholders/psu.svg"
   },
@@ -1807,8 +1806,8 @@ const ISE_PRODUCTS = [
     productivityLevel: 98,
     programmingLevel: 0,
     aiWorkloadLevel: 0,
-    features: ["กำลังไฟ 1000W แท้ รองรับ Power Spike ได้ถึง 200%", "Native 12VHPWR Cable สำหรับการ์ดจอตัวท็อป", "Seasonic Hybrid Silent Fan Control สวิตช์สลับโหมดเงียบ", "รับประกัน 10 ปี"],
-    pros: ["แบรนด์พาวเวอร์ซัพพลายที่น่าเชื่อถือที่สุดในวงการฮาร์ดแวร์", "จ่ายไฟนิ่งเป็นเส้นตรง Ripple Noise ต่ำมาก", "1000W เหลือเฟือสำหรับการ์ดจอ RTX 4090"],
+    features: ["กำลังไฟ 1000W และมาตรฐาน ATX 3.0 ตามข้อมูลชุดนี้", "Native 12VHPWR Cable", "Seasonic Hybrid Silent Fan Control", "ระบุการรับประกัน 10 ปีในชุดข้อมูล"],
+    pros: ["กำลังไฟ 1000W และมาตรฐาน 80 PLUS Gold", "จ่ายไฟนิ่งเป็นเส้นตรง Ripple Noise ต่ำมาก", "รองรับระบบที่ใช้การ์ดจอกำลังไฟสูงตามการจัดสเปก"],
     cons: ["ราคาสูง เหมาะกับคอมสเปกระดับท็อป"],
     image: "assets/placeholders/psu.svg"
   },
@@ -1841,7 +1840,7 @@ const ISE_PRODUCTS = [
     programmingLevel: 99,
     aiWorkloadLevel: 0,
     features: ["บอดี้อะลูมิเนียม CNC ชิ้นเดียวทั้งตัว น้ำหนักแน่น 1.75 กก.", "โครงสร้าง Double-Gasket Mount สัมผัสพิมพ์นุ่มละมุนและเสียงทุ้มไพเราะ", "รองรับโปรแกรม QMK/VIA รีแมปปุ่มและเขียน Macro ขั้นสูงสำหรับโปรแกรมเมอร์", "เชื่อมต่อไร้สาย Bluetooth 5.1 ได้ 3 อุปกรณ์ และแบบสาย Type-C"],
-    pros: ["คีย์บอร์ดที่โปรแกรมเมอร์ระดับโลกยกย่อง สัมผัสการพิมพ์ดีที่สุด", "สวิตช์ Hot-swappable ถอดเปลี่ยนได้โดยไม่ต้องบัดกรี", "รองรับทั้ง Mac และ Windows อย่างสมบูรณ์แบบ"],
+    pros: ["โครงสร้าง Double-Gasket และรองรับ QMK/VIA สำหรับปรับปุ่มและมาโคร", "สวิตช์ Hot-swappable ถอดเปลี่ยนได้โดยไม่ต้องบัดกรี", "รองรับทั้ง macOS และ Windows"],
     cons: ["น้ำหนักหนักมากไม่เหมาะกับการพกพา เน้นวางประจำโต๊ะทำงาน", "ราคาสูง"],
     image: "assets/placeholders/peripherals.svg"
   },
@@ -1870,7 +1869,7 @@ const ISE_PRODUCTS = [
     programmingLevel: 86,
     aiWorkloadLevel: 0,
     features: ["การเชื่อมต่อ Tri-Mode: สาย Type-C, ไร้สาย 2.4GHz ดองเกิล, Bluetooth 5.0", "เลย์เอาต์ 75% ประหยัดพื้นที่โต๊ะแต่มีปุ่ม F1-F12 และลูกศรครบ", "สวิตช์ Hot-swappable และไฟ RGB 20 โหมด"],
-    pros: ["ราคา ฿1,890 คุ้มค่าที่สุดสำหรับการเริ่มต้นใช้คีย์บอร์ดกลไก", "แบตเตอรี่ใหญ่ 3750mAh ใช้งานไร้สายได้นาน"],
+    pros: ["ราคา ฿1,890 เป็นตัวเลือกเริ่มต้นในชุดข้อมูลคีย์บอร์ดกลไก", "แบตเตอรี่ 3750mAh สำหรับการใช้งานไร้สาย"],
     cons: ["โครงสร้างเป็นพลาสติก สัมผัสและเสียงยังไม่แน่นเท่าคีย์บอร์ดบอดี้โลหะ"],
     image: "assets/placeholders/peripherals.svg"
   },
@@ -1899,7 +1898,7 @@ const ISE_PRODUCTS = [
     programmingLevel: 98,
     aiWorkloadLevel: 0,
     features: ["ลูกกลิ้งแม่เหล็ก MagSpeed เลื่อนโค้ดได้ 1,000 บรรทัดใน 1 วินาที", "ล้อเลื่อนแนวนอนบริเวณนิ้วหัวแม่มือ เลื่อนดูบรรทัดโค้ดยาวๆ ได้ง่ายมาก", "สวิตช์ Quiet Clicks ลดเสียงคลิกลง 90%", "เซ็นเซอร์ 8,000 DPI Darkfield ใช้งานบนกระจกได้"],
-    pros: ["เมาส์ที่ดีที่สุดสำหรับงานเขียนโค้ด เอกสาร และงานที่ต้องเลื่อนดูข้อมูลจำนวนมาก", "รูปทรงตามหลักการยศาสตร์ ลดความเมื่อยล้าข้อมือ", "ชาร์จ 1 ครั้งใช้งานได้นานถึง 70 วัน"],
+    pros: ["MagSpeed และล้อเลื่อนแนวนอนเหมาะกับเอกสาร โค้ด และตารางข้อมูล", "รูปทรงตามหลักการยศาสตร์ ลดความเมื่อยล้าข้อมือ", "ชาร์จ 1 ครั้งใช้งานได้นานถึง 70 วัน"],
     cons: ["น้ำหนัก 141 กรัม และเซ็นเซอร์เน้นทำงาน ไม่เหมาะกับการเล่นเกมแนว FPS"],
     image: "assets/placeholders/peripherals.svg"
   },
@@ -1928,7 +1927,7 @@ const ISE_PRODUCTS = [
     programmingLevel: 75,
     aiWorkloadLevel: 0,
     features: ["น้ำหนักเบาเป็นพิเศษเพียง 60 กรัม", "สวิตช์ไฮบริด LIGHTFORCE ผสานความเร็วออปติคอลกับสัมผัสกลไก", "เซ็นเซอร์ HERO 2 ความละเอียด 32,000 DPI Polling rate สูงสุด 4,000Hz", "แผ่นรองเมาส์ PTFE บริสุทธิ์ เลื่อนลื่นไร้แรงต้าน"],
-    pros: ["เมาส์ที่นักแข่ง Esports ระดับโลกไว้วางใจมากที่สุด", "น้ำหนักเบาหยุดเป้าและสะบัดได้แม่นยำสูงสุด"],
+    pros: ["น้ำหนัก 60 กรัม พร้อมเซ็นเซอร์ HERO 2 สูงสุด 32,000 DPI", "Polling Rate สูงสุด 4,000Hz ตามข้อมูลชุดนี้"],
     cons: ["ไม่มีล้อเลื่อนข้างสำหรับงาน Productivity", "ปุ่มกดด้านข้างมีเพียง 2 ปุ่ม"],
     image: "assets/placeholders/peripherals.svg"
   }

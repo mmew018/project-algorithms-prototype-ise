@@ -48,8 +48,8 @@ The ISE processing pipeline enforces strict separation of concerns across 5 disc
 ## 2. Module Responsibilities & Boundary Definition
 
 ### A. Data Layer (`data/products.js`)
-- Houses the authentic hardware catalog of 60+ products across 11 key categories.
-- Ensures physical and technical consistency (e.g. realistic GPU TGPs, valid CPU socket configurations, authentic battery Wh ratings).
+- Houses the static prototype catalog of 60 products across 11 categories.
+- Normalizes product fields and units for deterministic retrieval, ranking, and presentation.
 - Structured schema exposes numeric attributes (`price`, `ram`, `storage`, `displaySize`, `refreshRate`, `weight`, `battery`) and normalized domain ratings (`performanceLevel`, `gamingLevel`, `productivityLevel`, `programmingLevel`, `aiWorkloadLevel`).
 
 ### B. Query Understanding Engine (`js/engine/queryParser.js`)
@@ -121,7 +121,7 @@ script.js (onSearchSubmit)
 ---
 
 ## 4. Algorithmic Complexity Discussion
-- **Query Parsing:** $O(T)$ where $T$ is the number of tokens in the query string. Regex matches execute in under $1\text{ ms}$.
-- **Inverted Index Construction:** $O(N \cdot M)$ performed once at startup, where $N$ is catalog size ($60$) and $M$ is the average token count per product. Runtime: $< 2\text{ ms}$.
+- **Query Parsing:** $O(T)$ where $T$ is the number of tokens in the query string. Runtime is measured in the active browser and varies by device.
+- **Inverted Index Construction:** $O(N \cdot M)$ performed once at startup, where $N$ is catalog size ($60$) and $M$ is the average token count per product.
 - **Candidate Retrieval:** $O(K \cdot L)$ where $K$ is the query token count and $L$ is posting list size.
-- **Multi-Criteria Ranking:** $O(C \log C)$ where $C$ is the candidate count ($C \le N$). For $N = 60$, execution completes in under $3\text{ ms}$ on standard consumer hardware.
+- **Multi-Criteria Ranking:** $O(C \log C)$ where $C$ is the candidate count ($C \le N$). The UI reports observed runtime for the current browser session; it is not a performance SLA.

@@ -25,11 +25,8 @@
     <rect x="156" y="86" width="42" height="24" rx="1" fill="#334155"/> <!-- 24-Pin -->
     <!-- 80 Plus Gold Badge Mockup -->
     <rect x="25" y="10" width="50" height="18" rx="2" fill="#eab308"/>
-    <text x="50" y="23" text-anchor="middle" fill="#000000" font-family="-apple-system, sans-serif" font-size="9" font-weight="900">80 PLUS GOLD</text>
     <!-- Wattage -->
-    <text x="50" y="125" text-anchor="middle" fill="#ffffff" font-family="monospace" font-size="12" font-weight="bold">850W ATX 3.0</text>
     <!-- Shadow -->
     <ellipse cx="110" cy="152" rx="100" ry="6" fill="#0f172a" opacity="0.14"/>
   </g>
-  <text x="200" y="265" text-anchor="middle" fill="#ca8a04" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="13" font-weight="700" letter-spacing="1">POWER SUPPLY UNIT (PSU)</text>
 </svg>

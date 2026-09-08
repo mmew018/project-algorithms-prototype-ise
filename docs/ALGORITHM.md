@@ -82,14 +82,14 @@ If no explicit specification was requested, $S_{\text{spec}}$ is inactive and ex
 ---
 
 ### D. Use Case Score ($S_{\text{use}}$)
-Directly maps to the product's verified domain readiness:
-- **Programming:** $S_{\text{use}} = \text{product.programmingLevel}$ (evaluates multi-core CPU, RAM capacity, and keyboard quality).
-- **Gaming:** $S_{\text{use}} = \text{product.gamingLevel}$ (evaluates GPU TGP, screen response time, and cooling).
-- **Thin & Light:** Evaluated empirically via chassis weight $W$ (kg) and battery capacity $B$ (Wh):
+Maps to author-assigned capability ratings in the prototype dataset. These ratings support a deterministic demonstration and are not measured hardware benchmarks:
+- **Programming:** $S_{\text{use}} = \text{product.programmingLevel}$.
+- **Gaming:** $S_{\text{use}} = \text{product.gamingLevel}$.
+- **Thin & Light:** Calculated by the following rule-based formula using chassis weight $W$ (kg) and battery capacity $B$ (Wh):
   $$S_{\text{thin}} = \min\left(100, \max\left(30, 70 + \Delta_W + \Delta_B\right)\right)$$
   - $\Delta_W = +20$ if $W \le 1.25\text{ kg}$; $+10$ if $W \le 1.50\text{ kg}$; $-30$ if $W \ge 2.20\text{ kg}$.
   - $\Delta_B = +15$ if $B \ge 70\text{ Wh}$; $-5$ if $B \le 45\text{ Wh}$.
-- **AI Workload:** $S_{\text{use}} = \text{product.aiWorkloadLevel}$ (evaluates Tensor cores, AVX-512 support, and VRAM bandwidth).
+- **AI Workload:** $S_{\text{use}} = \text{product.aiWorkloadLevel}$.
 
 ---
 

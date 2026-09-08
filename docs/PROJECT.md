@@ -7,11 +7,11 @@
 - **Product Name:** ISE
 - **Full Name:** Intelligent Search Engine for Computer & Technology Products
 - **Prototype Brand:** NexusTech / ISE
-- **Academic Context:** University Capstone Project (Information Systems / Computer Science, ~2 Months Development Cycle)
+- **Academic Context:** University Capstone Project Prototype (Information Systems / Computer Science)
 - **Primary Domain:** Computer hardware, laptops, components, displays, and high-performance workstation peripherals.
 
 ### Core Value Proposition:
-Traditional e-commerce platforms force users to translate their functional goals into precise SKU keywords and static database filters. ISE transforms this paradigm by interpreting natural language requirements:
+A simple keyword baseline requires users to translate functional goals into explicit product terms. ISE explores how rule-based intent extraction and multi-criteria ranking can support queries expressed as needs:
 > *"จากความต้องการของฉัน สินค้าไหนเหมาะที่สุด และเพราะอะไร?"*
 > *(From my functional needs and budgetary constraints, which product is optimal, and why?)*
 
@@ -24,10 +24,10 @@ Modern computer hardware catalogs feature intricate specifications with multidim
 - Display resolutions, panel types (IPS, OLED, Fast IPS), color spaces (sRGB, DCI-P3), refresh rates.
 - Form factor considerations, battery capacities (Wh), and chassis weight.
 
-### Limitations of Traditional E-Commerce Search:
-1. **Keyword Rigidity (Exact-Match Failure):** A query like `"โน้ตบุ๊กสำหรับเขียนโปรแกรม งบไม่เกิน 30000"` fails if product titles do not explicitly contain the exact tokens `"เขียนโปรแกรม"`.
-2. **Binary Filter Dropping:** Hard price filters abruptly drop products that are minimally over budget (e.g. ฿30,900 on a ฿30,000 budget), even if they provide 50% better specifications and longevity.
-3. **Absence of Explainability:** Search results are sorted by popularity or ascending price without explaining *why* a particular machine is suited for software development, gaming, or content creation.
+### Limitations of the Project Keyword Baseline:
+1. **Keyword Rigidity:** Exact token matching can miss functional intent when the same words do not appear in product text.
+2. **Binary Filtering:** A hard price boundary can remove products slightly above a stated budget without showing them as relaxed alternatives.
+3. **No Generated Explanation:** The baseline used in this project does not generate a reason for each ranking position.
 
 ---
 
@@ -46,7 +46,7 @@ Modern computer hardware catalogs feature intricate specifications with multidim
 ---
 
 ## 4. System Boundaries & Non-Goals
-To preserve academic credibility and adhere to the 2-month capstone timeline, the project maintains strict boundaries:
+To preserve academic credibility, the prototype maintains strict boundaries:
 
 | Included in ISE Scope | Explicit Non-Goals |
 | :--- | :--- |
@@ -59,8 +59,11 @@ To preserve academic credibility and adhere to the 2-month capstone timeline, th
 
 ---
 
-## 5. Development Timeline & Milestone Cadence
-- **Weeks 1–2:** Requirements analysis, hardware data modeling (70+ products schema), taxonomy definition.
+## 5. Reference Milestone Plan
+
+แผนด้านล่างใช้แสดงลำดับงานที่เหมาะสมสำหรับพัฒนา Prototype และไม่ใช่หลักฐานยืนยันระยะเวลาที่ใช้จริง
+
+- **Weeks 1–2:** Requirements analysis, hardware data modeling (60 products / 11 categories), taxonomy definition.
 - **Weeks 3–4:** Information retrieval engine, rule-based Thai NLP parser, in-memory inverted index.
 - **Weeks 5–6:** Multi-criteria weighted ranking formulation, dynamic rationale synthesis.
 - **Weeks 7–8:** High-density UI implementation (NotebookSPEC inspiration + modern design system), comparison tool, benchmark suite, cross-resolution visual QA, and technical documentation.

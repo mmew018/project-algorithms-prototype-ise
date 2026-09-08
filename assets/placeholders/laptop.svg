@@ -35,5 +35,4 @@
     <!-- Shadow -->
     <ellipse cx="140" cy="198" rx="130" ry="6" fill="#0f172a" opacity="0.12"/>
   </g>
-  <text x="200" y="270" text-anchor="middle" fill="#64748b" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="13" font-weight="600" letter-spacing="1">ULTRABOOK / LAPTOP</text>
 </svg>

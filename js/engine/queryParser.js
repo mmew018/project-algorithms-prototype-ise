@@ -38,6 +38,8 @@ const ISEQueryParser = {
     // 6. Measure how much product intent was actually recognized. A budget by
     // itself is not enough to prove that the user is asking for an IT product.
     const confidence = this.measureIntentConfidence({ category, brand, budget, specs, useCase });
+    const hasSpecs = Object.values(specs).some(value => value !== null && value !== undefined);
+    const needsClarification = Boolean(useCase && !category && !brand && !hasSpecs);
 
     // 7. Infer implicit priorities
     const priority = this.inferPriority({ category, budget, specs, useCase });
@@ -55,6 +57,7 @@ const ISEQueryParser = {
       useCase,
       confidence,
       isUnderstood: confidence.isUnderstood,
+      needsClarification,
       priority,
       interpretationText
     };
@@ -83,6 +86,7 @@ const ISEQueryParser = {
         isUnderstood: false
       },
       isUnderstood: false,
+      needsClarification: false,
       priority: 'General Relevance',
       interpretationText: 'ค้นหาทั่วไป'
     };
@@ -125,6 +129,10 @@ const ISEQueryParser = {
     if (
       text.includes('โน้ตบุ๊ก') ||
       text.includes('โน้ตบุ๊ค') ||
+      text.includes('โน็ตบุ๊ก') ||
+      text.includes('โน็ตบุ๊ค') ||
+      text.includes('โน้ตบุก') ||
+      text.includes('โน๊ตบุก') ||
       text.includes('แล็ปท็อป') ||
       text.includes('laptop') ||
       text.includes('notebook') ||

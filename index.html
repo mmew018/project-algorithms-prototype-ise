@@ -11,9 +11,10 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&family=Noto+Sans+Thai:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="style.css?v=20260908">
 </head>
 <body>
+  <a class="skip-link" href="#mainContent">ข้ามไปยังเนื้อหาหลัก</a>
   <div class="app-container">
 
     <!-- ==========================================
@@ -25,7 +26,7 @@
           <div class="brand-logo" aria-hidden="true">ISE</div>
           <div class="brand-text">
             <span class="brand-name">NexusTech <span>/ ISE</span></span>
-            <span class="brand-tagline">Intelligent Search Engine for Tech</span>
+        <span class="brand-tagline">Explainable Product Search Prototype</span>
           </div>
         </a>
 
@@ -37,14 +38,11 @@
             เปรียบเทียบ
             <span class="compare-badge" id="navCompareCount">0</span>
           </a>
-          <a href="#how-it-works" class="nav-link" data-view="how-it-works">การทำงาน</a>
-          <a href="#algorithm" class="nav-link" data-view="algorithm">อัลกอริทึม</a>
-          <a href="#benchmark" class="nav-link" data-view="benchmark">ทดสอบระบบ (Benchmark)</a>
-          <a href="#about" class="nav-link" data-view="about">เกี่ยวกับเรา</a>
+          <a href="#about" class="nav-link" data-view="about">เกี่ยวกับระบบ</a>
         </nav>
 
         <!-- Mobile Menu Toggle Button -->
-        <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="เปิดเมนูมือถือ" aria-expanded="false">
+        <button type="button" class="mobile-menu-btn" id="mobileMenuBtn" aria-label="เปิดเมนูมือถือ" aria-expanded="false" aria-controls="mainNav">
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
             <line x1="3" y1="12" x2="21" y2="12"></line>
             <line x1="3" y1="6" x2="21" y2="6"></line>
@@ -56,18 +54,18 @@
       <!-- Quick Category Bar -->
       <nav class="category-quickbar" aria-label="เลือกหมวดหมู่ด่วน">
         <div class="category-quickbar-inner" id="categoryQuickbar">
-          <button class="cat-btn active" data-cat="">ทั้งหมด (All)</button>
-          <button class="cat-btn" data-cat="Laptop">โน้ตบุ๊ก (Laptop)</button>
-          <button class="cat-btn" data-cat="Gaming Laptop">เกมมิ่งโน้ตบุ๊ก</button>
-          <button class="cat-btn" data-cat="CPU">ซีพียู (CPU)</button>
-          <button class="cat-btn" data-cat="GPU">การ์ดจอ (GPU)</button>
-          <button class="cat-btn" data-cat="Monitor">จอมอนิเตอร์</button>
-          <button class="cat-btn" data-cat="SSD">SSD ความเร็วสูง</button>
-          <button class="cat-btn" data-cat="RAM">RAM</button>
-          <button class="cat-btn" data-cat="Desktop PC">คอมพิวเตอร์ตั้งโต๊ะ</button>
-          <button class="cat-btn" data-cat="Mechanical Keyboard">คีย์บอร์ดกลไก</button>
-          <button class="cat-btn" data-cat="Mouse">เมาส์</button>
-          <button class="cat-btn" data-cat="PSU">พาวเวอร์ซัพพลาย</button>
+          <button type="button" class="cat-btn active" data-cat="" aria-pressed="true">ทั้งหมด</button>
+          <button type="button" class="cat-btn" data-cat="Laptop" aria-pressed="false">โน้ตบุ๊ก</button>
+          <button type="button" class="cat-btn" data-cat="Gaming Laptop" aria-pressed="false">เกมมิ่ง</button>
+          <button type="button" class="cat-btn" data-cat="CPU" aria-pressed="false">CPU</button>
+          <button type="button" class="cat-btn" data-cat="GPU" aria-pressed="false">GPU</button>
+          <button type="button" class="cat-btn" data-cat="Monitor" aria-pressed="false">จอ</button>
+          <button type="button" class="cat-btn" data-cat="SSD" aria-pressed="false">SSD</button>
+          <button type="button" class="cat-btn" data-cat="RAM" aria-pressed="false">RAM</button>
+          <button type="button" class="cat-btn" data-cat="Desktop PC" aria-pressed="false">เดสก์ท็อป</button>
+          <button type="button" class="cat-btn" data-cat="Mechanical Keyboard" aria-pressed="false">คีย์บอร์ด</button>
+          <button type="button" class="cat-btn" data-cat="Mouse" aria-pressed="false">เมาส์</button>
+          <button type="button" class="cat-btn" data-cat="PSU" aria-pressed="false">PSU</button>
         </div>
       </nav>
     </header>
@@ -75,11 +73,11 @@
     <!-- ==========================================
          HERO SEARCH SECTION
          ========================================== -->
-    <section class="hero-search-section" aria-labelledby="heroTitle">
+    <section class="hero-search-section" id="heroSearchSection" aria-labelledby="heroTitle">
       <div class="hero-search-inner">
         <h1 class="hero-headline" id="heroTitle">ค้นหาสินค้าไอทีด้วยความต้องการจริงของคุณ</h1>
         <p class="hero-subheadline">
-          ระบบเข้าใจภาษาธรรมชาติ สกัดความต้องการ จัดอันดับด้วย Multi-Criteria และอธิบายเหตุผลได้อย่างโปร่งใส
+          ต้นแบบวิเคราะห์คำค้นในขอบเขตสินค้าไอที จัดอันดับจากหลายเงื่อนไข และอธิบายเหตุผลได้
         </p>
 
         <!-- Search Input Box -->
@@ -111,6 +109,7 @@
             </svg>
           </button>
         </form>
+        <p class="search-validation" id="searchValidation" role="status" aria-live="polite" hidden></p>
 
         <!-- Example Prompt Chips -->
         <div class="example-chips-wrapper" aria-label="ตัวอย่างคำค้นหาที่แนะนำ">
@@ -123,15 +122,6 @@
           </button>
           <button type="button" class="prompt-chip" data-query="จอ 27 นิ้ว 144Hz">
             🖥️ จอ 27 นิ้ว 144Hz
-          </button>
-          <button type="button" class="prompt-chip" data-query="SSD 1TB สำหรับ Gaming">
-            ⚡ SSD 1TB สำหรับ Gaming
-          </button>
-          <button type="button" class="prompt-chip" data-query="CPU สำหรับทำงาน AI">
-            🧠 CPU สำหรับทำงาน AI
-          </button>
-          <button type="button" class="prompt-chip" data-query="โน้ตบุ๊กบางเบา แบตอึด สำหรับทำงาน">
-            🔋 โน้ตบุ๊กบางเบา แบตอึด
           </button>
         </div>
 
@@ -146,12 +136,25 @@
     <!-- ==========================================
          MAIN CONTENT AREA (MULTI-VIEW CONTAINER)
          ========================================== -->
-    <main class="main-content" id="mainContent">
+    <main class="main-content" id="mainContent" tabindex="-1">
 
       <!-- ========================================
            VIEW 1: SEARCH & RESULTS
            ======================================== -->
       <section class="view-section active" id="viewSearch" aria-label="ผลการค้นหาและจัดอันดับ">
+
+        <div class="search-landing-card" id="searchLanding">
+          <div>
+            <span class="search-landing-kicker">เริ่มค้นหาได้ทันที</span>
+            <h2>บอกความต้องการในแบบที่คุณพูดจริง</h2>
+            <p>ยิ่งระบุหมวดสินค้า การใช้งาน งบประมาณ หรือสเปกชัดเจน ระบบยิ่งจัดอันดับและอธิบายผลลัพธ์ได้ตรงขึ้น</p>
+          </div>
+          <div class="search-landing-tips" aria-label="ข้อมูลที่ช่วยให้ค้นหาได้ตรงขึ้น">
+            <div><strong>1. สินค้า</strong><span>เช่น โน้ตบุ๊ก จอ หรือ SSD</span></div>
+            <div><strong>2. การใช้งาน</strong><span>เช่น เขียนโปรแกรม เล่นเกม หรือทำงาน</span></div>
+            <div><strong>3. เงื่อนไข</strong><span>เช่น งบไม่เกิน 30,000 หรือ RTX 4060</span></div>
+          </div>
+        </div>
 
         <!-- Query Understanding Card ("เราเข้าใจความต้องการของคุณ") -->
         <div class="query-understanding-card" id="queryUnderstandingCard" style="display: none;">
@@ -164,18 +167,21 @@
               </svg>
               <h2 class="qu-title">เราเข้าใจความต้องการของคุณ</h2>
             </div>
-            <span class="qu-subtitle" id="quRawEcho"></span>
+            <span class="qu-subtitle" id="quRawEcho" hidden></span>
           </div>
 
           <div class="qu-chips" id="quChipsContainer">
             <!-- Injected via JavaScript -->
           </div>
 
-          <div class="qu-priority" id="quPriorityWrap">
-            <strong>เป้าหมายการจัดอันดับหลัก:</strong>
-            <span id="quPriorityText">ความเหมาะสมโดยรวมของสเปกต่อราคา</span>
-          </div>
-          <p class="match-score-help">คะแนนความตรงกับเงื่อนไขคำนวณเฉพาะข้อมูลที่คุณระบุ ไม่ใช่ค่าความแม่นยำทางสถิติ</p>
+          <details class="qu-details">
+            <summary>ดูรายละเอียดการจัดอันดับ</summary>
+            <div class="qu-priority" id="quPriorityWrap">
+              <strong>เป้าหมายหลัก:</strong>
+              <span id="quPriorityText">ความเหมาะสมโดยรวมของสเปกต่อราคา</span>
+            </div>
+            <p class="match-score-help">คะแนนคำนวณเฉพาะข้อมูลที่คุณระบุ ไม่ใช่ค่าความแม่นยำทางสถิติ</p>
+          </details>
         </div>
 
         <!-- Results Meta Bar & Controls -->
@@ -209,12 +215,16 @@
               <option value="relevance">ตรงกับคำค้นเท่านั้น</option>
             </select>
           </div>
+          <p class="results-disclaimer" role="note">
+            ข้อมูลและราคาเป็นชุดสาธิต อาจไม่ใช่ข้อมูลปัจจุบัน
+            <a href="#about">ดูขอบเขต Prototype</a>
+          </p>
         </div>
 
         <div class="active-filters-summary" id="activeFiltersSummary" aria-live="polite" hidden></div>
 
         <!-- Layout: Sidebar Filters + Results Grid -->
-        <div class="search-results-layout">
+        <div class="search-results-layout" id="searchResultsLayout">
 
           <!-- Filter Sidebar -->
           <aside class="filter-sidebar" id="filterSidebar" aria-label="ตัวกรองคุณสมบัติสินค้า">
@@ -353,11 +363,11 @@
             <div>
               <h2 class="compare-title">เปรียบเทียบสเปกสินค้า</h2>
               <p style="color: var(--text-secondary); font-size: 0.9rem;">
-                เปรียบเทียบฮาร์ดแวร์ได้สูงสุด 3 รายการ พร้อมเน้นความแตกต่างของสเปกเพื่อช่วยในการตัดสินใจ
+                เปรียบเทียบฮาร์ดแวร์ในหมวดเดียวกันได้สูงสุด 3 รายการ พร้อมเน้นความแตกต่างของสเปกเพื่อช่วยในการตัดสินใจ
               </p>
             </div>
             <div style="display: flex; gap: 0.5rem;">
-              <button type="button" class="btn-compare-toggle" id="btnToggleDiffs">
+              <button type="button" class="btn-compare-toggle" id="btnToggleDiffs" aria-pressed="false">
                 🔍 ไฮไลต์จุดต่างของสเปก
               </button>
               <button type="button" class="btn-compare-toggle" id="btnClearCompare">
@@ -366,7 +376,7 @@
             </div>
           </div>
 
-          <div id="compareTableWrapper" style="overflow-x: auto;">
+          <div id="compareTableWrapper" role="region" aria-label="ตารางเปรียบเทียบสินค้า" tabindex="0" style="overflow-x: auto;">
             <!-- Injected via JavaScript -->
           </div>
         </div>
@@ -380,7 +390,7 @@
           <h2 class="tech-doc-title">สถาปัตยกรรมและการทำงานของ ISE</h2>
           <p class="tech-doc-lead">
             ISE ถูกออกแบบตามหลัก Information Retrieval (IR) สมัยใหม่ โดยแบ่งขั้นตอนการประมวลผลออกเป็น 5 ชั้น (Pipeline)
-            อย่างชัดเจน เพื่อเปลี่ยนข้อความความต้องการทั่วไปของผู้ใช้ ให้กลายเป็นคำแนะนำที่แม่นยำและตรวจสอบเหตุผลได้
+            อย่างชัดเจน เพื่อเปลี่ยนข้อความความต้องการทั่วไปของผู้ใช้ ให้กลายเป็นผลลัพธ์ที่จัดอันดับตามเกณฑ์และตรวจสอบเหตุผลได้
           </p>
 
           <!-- Pipeline Architecture Visual Diagram -->
@@ -413,30 +423,30 @@
           </div>
 
           <h3 style="font-size: 1.2rem; font-weight: 700; margin: 1.5rem 0 0.5rem;">
-            ความแตกต่างระหว่างการค้นหาแบบเดิม กับ ISE
+            การเปรียบเทียบกับ Keyword baseline ของโครงการ
           </h3>
           <table class="spec-table" style="margin-bottom: 2rem;">
             <thead>
               <tr>
                 <th>มิติการประเมิน</th>
-                <td>ระบบค้นหา E-Commerce ทั่วไป (Keyword-Based)</td>
-                <td>ระบบค้นหาอัจฉริยะ ISE (Multi-Criteria IR)</td>
+                <td>Keyword baseline ที่ใช้ในการทดลอง</td>
+                <td>ISE Multi-Criteria Retrieval</td>
               </tr>
             </thead>
             <tbody>
               <tr>
                 <th>การเข้าใจคำค้นหา</th>
-                <td>จับคู่คำตรงๆ (Exact Match) ขาดความเข้าใจเจตนา เช่น ค้น "เขียนโปรแกรม" หากชื่อสินค้าไม่มีคำนี้จะไม่พบ</td>
-                <td><strong>Intent Parser</strong> สกัด Use-Case ได้ว่า "เขียนโปรแกรม" ต้องการ CPU คอร์เยอะ และ RAM ขั้นต่ำ 16GB</td>
+                <td>จับคู่คำใน query กับข้อมูลสินค้าโดยตรงตาม baseline ที่กำหนด</td>
+                <td><strong>Intent Parser</strong> สกัดหมวด งบ สเปก และ Use Case เช่น Programming แล้วใช้เป็นเงื่อนไขจัดอันดับ</td>
               </tr>
               <tr>
                 <th>การจัดการงบประมาณ</th>
-                <td>เรียงราคาจากน้อยไปมาก หรือกรอง Min/Max แบบแข็ง (Hard Drop)</td>
+                <td>เรียงราคาจากน้อยไปมากหลังจับคู่คำตามวิธี baseline ของโครงการ</td>
                 <td><strong>Budget Function</strong> ให้คะแนนความคุ้มค่า และลดคะแนนแบบเส้นโค้งหากเกินงบเล็กน้อยแต่สเปกคุ้มค่า</td>
               </tr>
               <tr>
                 <th>ความโปร่งใสของผลลัพธ์</th>
-                <td>ไม่บอกเหตุผล ผู้ใช้ต้องเทียบสเปกเองทั้งหมด</td>
+                <td>ไม่สร้างคำอธิบายรายสินค้าใน baseline ที่ใช้ทดสอบ</td>
                 <td><strong>Explainable Scoring</strong> แจกแจงคะแนน 4 มิติ และบอกว่าเพราะเหตุใดจึงเหมาะกับคุณ</td>
               </tr>
             </tbody>
@@ -451,7 +461,7 @@
         <div class="tech-doc-container">
           <h2 class="tech-doc-title">สูตรการคำนวณ Multi-Criteria Ranking</h2>
           <p class="tech-doc-lead">
-            ทุกคะแนนที่ปรากฏในระบบ ISE คำนวณจากสูตรคณิตศาสตร์จริง ไม่มีการสุ่มตัวเลขหรือสร้างคะแนน 99% หลอกตา
+              ทุกคะแนนในระบบ ISE คำนวณจากเกณฑ์และน้ำหนักที่เปิดเผยได้ โดยใช้เฉพาะเงื่อนไขที่ผู้ใช้ระบุในคำค้น
           </p>
 
           <div class="formula-box">
@@ -496,7 +506,7 @@ MatchScore = Σ(คะแนนของเกณฑ์ที่ระบุ × 
                 4. คะแนนความเหมาะสมกับงาน (Use Case Score: น้ำหนัก 20%)
               </h4>
               <p style="font-size: 0.88rem; color: var(--text-secondary);">
-                ประเมินความเหมาะสมเฉพาะด้าน เช่น สำหรับงาน "Programming" วัดจากคะแนน Multi-core CPU และ RAM ส่วน "Thin & Light" พิจารณาน้ำหนัก ≤ 1.25 kg และแบตเตอรี่ ≥ 70 Wh
+                ใช้คะแนนความเหมาะสมกับงานที่ผู้จัดทำกำหนดไว้ในชุดข้อมูลสาธิตสำหรับ Programming, Gaming และ AI ส่วน Thin &amp; Light ใช้กฎจากน้ำหนักและความจุแบตเตอรี่ คะแนนเหล่านี้ไม่ใช่ผลทดสอบฮาร์ดแวร์จริง
               </p>
             </div>
           </div>
@@ -511,8 +521,8 @@ MatchScore = Σ(คะแนนของเกณฑ์ที่ระบุ × 
           <div class="benchmark-intro">
             <h2 class="benchmark-title">การทดสอบประเมินผล (Information Retrieval Benchmark)</h2>
             <p class="benchmark-desc">
-              ชุดทดสอบเชิงประจักษ์ (Empirical Regression Test Suite) จำนวน 6 สถานการณ์จริง
-              เปรียบเทียบผลลัพธ์ระหว่างระบบค้นหาทั่วไปตามคีย์เวิร์ด (Baseline Search) กับระบบ ISE Multi-Criteria Ranking
+              ชุดทดสอบ regression ที่ผู้จัดทำคัดเลือกไว้ล่วงหน้า 6 สถานการณ์ (K = 3)
+              เปรียบเทียบ ISE กับ baseline ที่จับคู่คีย์เวิร์ดและเรียงราคาจากต่ำไปสูง
             </p>
           </div>
 
@@ -526,8 +536,14 @@ MatchScore = Σ(คะแนนของเกณฑ์ที่ระบุ × 
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                 <polygon points="5 3 19 12 5 21 5 3"></polygon>
               </svg>
-              <span>รันการทดสอบสดเดี๋ยวนี้ (Run Benchmark)</span>
+              <span>คำนวณผลจากชุดทดสอบนี้ (Run Benchmark)</span>
             </button>
+          </div>
+
+          <div class="benchmark-methodology" role="note" aria-label="ขอบเขตและวิธีการทดสอบ">
+            <strong>ขอบเขตการทดสอบ</strong>
+            <span>ข้อมูลสาธิตแบบคงที่ 60 รายการใน 11 หมวด • 6 curated scenarios • Ground Truth ที่ผู้จัดทำกำหนด • Cutoff K = 3</span>
+            <span>ผลลัพธ์ใช้ตรวจ regression ภายในชุดทดสอบนี้ ไม่ใช่ accuracy ของระบบทั้งหมด และ latency อาจต่างกันตามอุปกรณ์และเบราว์เซอร์</span>
           </div>
 
           <!-- Summary Metric Scorecards -->
@@ -538,7 +554,7 @@ MatchScore = Σ(คะแนนของเกณฑ์ที่ระบุ × 
                 <span class="metric-val-ise" id="mIsePrecision">0.944</span>
                 <span class="metric-val-baseline" id="mBasePrecision">0.222</span>
               </div>
-              <div class="metric-delta">+325% สูงกว่า Baseline</div>
+              <div class="metric-delta">สูงกว่า Baseline ในชุดทดสอบนี้ 325%</div>
             </div>
 
             <div class="metric-card">
@@ -547,7 +563,7 @@ MatchScore = Σ(คะแนนของเกณฑ์ที่ระบุ × 
                 <span class="metric-val-ise" id="mIseRecall">0.819</span>
                 <span class="metric-val-baseline" id="mBaseRecall">0.167</span>
               </div>
-              <div class="metric-delta">+390% ครอบคลุม Ground Truth</div>
+              <div class="metric-delta">สูงกว่า Baseline ในชุดทดสอบนี้ 390%</div>
             </div>
 
             <div class="metric-card">
@@ -556,15 +572,15 @@ MatchScore = Σ(คะแนนของเกณฑ์ที่ระบุ × 
                 <span class="metric-val-ise" id="mIseMrr">1.000</span>
                 <span class="metric-val-baseline" id="mBaseMrr">0.256</span>
               </div>
-              <div class="metric-delta">อันดับแรกตรงตามสเปก 100%</div>
+              <div class="metric-delta">พบสินค้าใน Ground Truth ที่อันดับ 1 ครบทั้ง 6 สถานการณ์</div>
             </div>
 
             <div class="metric-card">
               <div class="metric-name">Search Latency (Avg)</div>
               <div class="metric-value-comparison">
-                <span class="metric-val-ise" id="mIseLatency">2.8 ms</span>
+                <span class="metric-val-ise" id="mIseLatency">—</span>
               </div>
-              <div class="metric-delta">ประมวลผลทันทีในเบราว์เซอร์</div>
+              <div class="metric-delta">วัดในเบราว์เซอร์ของอุปกรณ์นี้เมื่อกดคำนวณ</div>
             </div>
           </div>
 
@@ -589,14 +605,33 @@ MatchScore = Σ(คะแนนของเกณฑ์ที่ระบุ × 
             เป็นโครงงานวิจัยและพัฒนาระบบต้นแบบ (Prototype) ภายใต้แบรนด์สมมุติ <strong>NexusTech</strong>
           </p>
 
-          <h3 style="font-size: 1.15rem; font-weight: 700; margin: 1.25rem 0 0.5rem;">
-            ความโปร่งใสทางวิชาการ (Academic Credibility & Scope)
-          </h3>
-          <ul style="padding-left: 1.25rem; font-size: 0.9rem; color: var(--text-secondary); display: flex; flex-direction: column; gap: 0.5rem; margin-bottom: 1.5rem;">
-            <li><strong>การประมวลผลภาษาธรรมชาติ:</strong> ระบบต้นแบบใช้ Rule-Based & Deterministic Regular Expression Token Matching ซึ่งมีความแม่นยำสูงในขอบเขตคำศัพท์ฮาร์ดแวร์ไอที โดยไม่ได้ใช้ Large Language Model (LLM) ภายนอกเพื่อความรวดเร็วและสามารถทำงานแบบ Standalone ได้ 100%</li>
-            <li><strong>Candidate Retrieval:</strong> ใช้โครงสร้าง Inverted Index และ Constraint Filter บนหน่วยความจำฝั่งไคลเอนต์</li>
-            <li><strong>ข้อมูลสินค้า:</strong> รวบรวมสเปกจริง ราคาจำหน่ายจริงในประเทศไทย (THB) จำนวนกว่า 60 รายการ</li>
-          </ul>
+          <div class="prototype-version" role="note">
+            <strong>Prototype v1.0</strong>
+            <span>ชุดข้อมูลสาธิต 60 รายการ · 11 หมวด · ตรวจทานล่าสุด 8 กันยายน 2026</span>
+          </div>
+
+          <div class="scope-grid">
+            <section class="scope-card">
+              <span class="scope-status current">ความสามารถปัจจุบัน</span>
+              <h3>พิสูจน์กระบวนการค้นหาแบบอธิบายได้</h3>
+              <p>ใช้กฎและ Regular Expression แยกหมวด งบ สเปก แบรนด์ และการใช้งาน จากนั้นคัดเลือกและจัดอันดับข้อมูลสาธิตในเบราว์เซอร์ โดยไม่ใช้ LLM หรือบริการ AI ภายนอก</p>
+            </section>
+            <section class="scope-card">
+              <span class="scope-status limitation">ข้อจำกัด</span>
+              <h3>รองรับภาษาภายในขอบเขตที่กำหนด</h3>
+              <p>อาจไม่เข้าใจคำสะกดหรือภาษาพูดบางรูปแบบ คะแนน Programming, Gaming และ AI บางส่วนเป็นค่าที่ผู้จัดทำกำหนด ไม่ใช่ผล Benchmark ฮาร์ดแวร์จริง</p>
+            </section>
+            <section class="scope-card">
+              <span class="scope-status future">แนวทางพัฒนาต่อ</span>
+              <h3>ขยายความครอบคลุมอย่างตรวจสอบได้</h3>
+              <p>มีแผนเพิ่ม Fuzzy Matching, Semantic Retrieval และ AI Intent Parsing ที่ตรวจสอบโครงสร้างผลลัพธ์ รวมถึงข้อมูลที่มีแหล่งอ้างอิงและชุดทดสอบจากผู้ประเมินอิสระ</p>
+            </section>
+          </div>
+
+          <div class="prototype-disclaimer" role="note">
+            <strong>ข้อควรทราบ:</strong>
+            ข้อมูลและราคาใช้เพื่อสาธิตและไม่ได้เชื่อมต่อ Inventory แบบ Real-time โปรดตรวจสอบราคา สเปก และประสิทธิภาพกับผู้ผลิตหรือร้านค้าก่อนตัดสินใจ
+          </div>
         </div>
       </section>
 
@@ -639,13 +674,13 @@ MatchScore = Σ(คะแนนของเกณฑ์ที่ระบุ × 
          FLOATING COMPARE DOCK
          ========================================== -->
     <div class="compare-floating-dock" id="compareDock" hidden>
-      <span class="compare-dock-text">
+      <span class="compare-dock-text" role="status" aria-live="polite">
         เลือกเปรียบเทียบ <strong id="compareDockCount">0</strong> / 3 รายการ
       </span>
       <button type="button" class="compare-dock-btn" id="compareDockOpenBtn">
         เปิดตารางเปรียบเทียบ
       </button>
-      <button type="button" class="compare-dock-clear" id="compareDockClearBtn" title="ล้างรายการ">
+      <button type="button" class="compare-dock-clear" id="compareDockClearBtn" aria-label="ล้างรายการเปรียบเทียบ" title="ล้างรายการ">
         ✕
       </button>
     </div>
@@ -698,7 +733,7 @@ MatchScore = Σ(คะแนนของเกณฑ์ที่ระบุ × 
           &copy; 2026 NexusTech / ISE. University Capstone Project Prototype. All rights reserved.
         </div>
         <div>
-          Designed for Clarity, Algorithmic Credibility, and Technical Rigor.
+          ข้อมูลและราคาเป็นชุดสาธิต อาจไม่ใช่ข้อมูลปัจจุบัน
         </div>
       </div>
     </footer>
@@ -706,14 +741,14 @@ MatchScore = Σ(คะแนนของเกณฑ์ที่ระบุ × 
   </div>
 
   <!-- Load Product Data, Engine Modules, and Benchmark Suite -->
-  <script src="data/products.js"></script>
-  <script src="js/engine/queryParser.js"></script>
-  <script src="js/engine/retrieval.js"></script>
-  <script src="js/engine/ranking.js"></script>
-  <script src="js/engine/explainer.js"></script>
-  <script src="js/benchmark/benchmark.js"></script>
+  <script src="data/products.js?v=20260908"></script>
+  <script src="js/engine/queryParser.js?v=20260908"></script>
+  <script src="js/engine/retrieval.js?v=20260908"></script>
+  <script src="js/engine/ranking.js?v=20260908"></script>
+  <script src="js/engine/explainer.js?v=20260908"></script>
+  <script src="js/benchmark/benchmark.js?v=20260908"></script>
 
   <!-- Main UI Application Controller -->
-  <script src="script.js"></script>
+  <script src="script.js?v=20260908"></script>
 </body>
 </html>

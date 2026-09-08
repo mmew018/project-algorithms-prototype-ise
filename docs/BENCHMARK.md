@@ -2,17 +2,17 @@
 
 ---
 
-## 1. Evaluation Methodology & Academic Honesty
-In accordance with Information Retrieval (IR) standards, this report presents empirical measurements from an automated regression evaluation suite. **No numerical results have been fabricated.**
+## 1. Evaluation Methodology & Scope
+This report presents metrics computed by `js/benchmark/benchmark.js` from the fixed prototype catalog and six predefined scenarios at $K=3$.
 
 The benchmark evaluates:
-1. **Baseline System:** A traditional keyword-matching and price-sorted search engine commonly found in e-commerce catalogs.
+1. **Baseline System:** Any-token matching across name, category, brand, CPU, and GPU fields, followed by ascending price order.
 2. **ISE Prototype System:** Query Understanding (Intent Extraction) + Inverted Index Retrieval + Multi-Criteria Weighted Ranking.
 
 ---
 
-## 2. Standardized Evaluation Scenarios & Ground Truth (GT)
-Ground Truth labels were created by domain hardware specifications matching functional criteria:
+## 2. Predefined Evaluation Scenarios & Ground Truth (GT)
+Ground Truth was authored by the project team from the explicit criteria below. It was not independently validated, crowdsourced, or derived from production user behavior. Some criteria add author-defined relevance assumptions beyond the literal query, such as panel type, storage speed, and instruction-set support.
 
 ### Scenario 1: *"โน้ตบุ๊กสำหรับเขียนโปรแกรม งบไม่เกิน 30000"*
 - **Target:** Laptops with high-performance multi-core CPUs, $\ge 16\text{GB}$ RAM, price $\le ฿30,000$.
@@ -53,7 +53,7 @@ Ground Truth labels were created by domain hardware specifications matching func
   - `cpu-amd-ryzen9-7900x` (12C/24T AVX-512, ฿15,900)
 
 ### Scenario 6: *"โน้ตบุ๊กบางเบา แบตอึด สำหรับทำงาน"*
-- **Target:** Ultrabooks weighing $\le 1.30\text{ kg}$ with high battery longevity ($\ge 12\text{ hrs}$).
+- **Target:** The three thin-and-light work notebooks listed in the author-defined relevance set for this scenario.
 - **Ground Truth Items:**
   - `nb-asus-zenbook-14-ux3405` (1.20 kg, 75 Wh battery, ฿39,900)
   - `nb-apple-macbook-air-m3-13` (1.24 kg, 18 hrs battery, ฿44,900)
@@ -82,39 +82,42 @@ Cutoff rank: $K = 3$.
 | **Precision@3** | **0.222** | **0.944** | **+325.2%** |
 | **Recall@3** | **0.167** | **0.819** | **+390.4%** |
 | **Mean Reciprocal Rank (MRR)** | **0.256** | **1.000** | **+290.6%** |
-| **Average Search Latency** | $0.08\text{ ms}$ | $2.55\text{ ms}$ | Lightweight in-browser |
+| **Average Search Latency** | Varies by run | Varies by run | Measured in the current browser |
 
 ---
 
 ## 5. Detailed Breakdown by Scenario
 
 ### Scenario 1: โน้ตบุ๊กสำหรับเขียนโปรแกรม งบไม่เกิน 30,000
-- **Baseline:** Returns HP 15 (฿14,900, 8GB RAM, Ryzen 3) as Rank 1 because it sorts naively by price. Precision@3 = 0.000.
-- **ISE:** Correctly identifies that 8GB RAM is insufficient for programming; ranks Acer Swift Go 14, Lenovo IdeaPad Slim 5, and ASUS Vivobook 16 at Ranks 1, 2, and 3. **Precision@3 = 1.000, MRR = 1.000**.
+- **Baseline:** Returns no candidates for this query. **Precision@3 = 0.000, Recall@3 = 0.000, MRR = 0.000**.
+- **ISE:** Ranks Acer Swift Go 14, ASUS Vivobook 16, and Lenovo IdeaPad Slim 5 at the top. Under the authored Ground Truth criterion, all three are relevant. **Precision@3 = 1.000, Recall@3 = 1.000, MRR = 1.000**.
 
 ### Scenario 2: Gaming Laptop RTX 4060 ราคาไม่เกิน 40,000
-- **Baseline:** Returns budget laptops without RTX 4060 (e.g. RTX 4050) due to generic keyword matches. Precision@3 = 0.333.
-- **ISE:** Exact GPU filter isolates RTX 4060 units; ranks Lenovo LOQ 105W and HP Victus 120W at top. **Precision@3 = 1.000, MRR = 1.000**.
+- **Baseline:** Its top three are two SSDs and one mouse; the first Ground Truth item appears below the cutoff. **Precision@3 = 0.000, Recall@3 = 0.000, MRR = 0.063**.
+- **ISE:** The parsed RTX 4060 constraint ranks Lenovo LOQ, HP Victus, and Acer Nitro V at the top. **Precision@3 = 1.000, Recall@3 = 1.000, MRR = 1.000**.
 
 ### Scenario 3: จอ 27 นิ้ว 144Hz
-- **Baseline:** Precision@3 = 0.333. Returns smaller 24" screens first because of price sorting.
-- **ISE:** Ranks ASUS TUF 180Hz, LG UltraGear 165Hz, and Gigabyte 144Hz at top. **Precision@3 = 1.000, MRR = 1.000**.
+- **Baseline:** Ranks ViewSonic, Gigabyte, and ASUS TUF at the top. **Precision@3 = 1.000, Recall@3 = 0.750, MRR = 1.000**.
+- **ISE:** Produces the same top three for this scenario. **Precision@3 = 1.000, Recall@3 = 0.750, MRR = 1.000**.
 
 ### Scenario 4: SSD 1TB สำหรับ Gaming
-- **Baseline:** Returns DRAM-less and SATA SSDs (Kingston NV2, Crucial MX500) due to low price. Precision@3 = 0.000.
-- **ISE:** Multi-criteria evaluates transfer speeds and game features; ranks WD Black SN850X and Samsung 990 Pro at top. **Precision@3 = 1.000, MRR = 1.000**.
+- **Baseline:** Ranks Kingston NV2, Crucial MX500, and Kingston KC3000; only KC3000 is in Ground Truth. **Precision@3 = 0.333, Recall@3 = 0.250, MRR = 0.333**.
+- **ISE:** Ranks WD Black SN850X, Samsung 990 Pro, and Kingston KC3000 at the top. **Precision@3 = 1.000, Recall@3 = 0.750, MRR = 1.000**.
 
 ### Scenario 5: CPU สำหรับทำงาน AI
-- **Baseline:** Returns Core i5-14400F and Ryzen 5 7600X. Precision@3 = 0.333.
-- **ISE:** Weights AVX-512 and multi-thread compute; ranks Ryzen 9 7950X and Core i9-14900K at top. **Precision@3 = 0.667, MRR = 1.000**.
+- **Baseline:** Its top three include RAM, a PSU, and Core i5-14400F; none are in Ground Truth. **Precision@3 = 0.000, Recall@3 = 0.000, MRR = 0.143**.
+- **ISE:** Ranks Ryzen 9 7950X, Core i9-14900K, and Core i7-14700K at the top. **Precision@3 = 1.000, Recall@3 = 0.750, MRR = 1.000**.
 
 ### Scenario 6: โน้ตบุ๊กบางเบา แบตอึด สำหรับทำงาน
-- **Baseline:** Returns standard budget laptops. Precision@3 = 0.000.
-- **ISE:** Calculates weight and battery Wh; ranks ASUS Zenbook 14 OLED (1.20 kg, 75 Wh) and MacBook Air M3 (1.24 kg, 18 hrs) at top. **Precision@3 = 0.667, MRR = 1.000**.
+- **Baseline:** Returns no candidates for this query. **Precision@3 = 0.000, Recall@3 = 0.000, MRR = 0.000**.
+- **ISE:** Ranks ASUS Zenbook 14 OLED, Acer Swift Go 14, and Lenovo ThinkPad T14s at the top; two are in Ground Truth. **Precision@3 = 0.667, Recall@3 = 0.667, MRR = 1.000**.
 
 ---
 
-## 6. Academic Limitations Disclosure
-- The benchmark evaluates a prototype catalog of 60+ representative items.
-- Ground truth sets were constructed by technical domain expert annotation rather than crowdsourced user feedback.
-- Production scaling would require larger test collections (e.g. TREC / MS MARCO style datasets) and continuous online A/B testing.
+## 6. Limitations Disclosure
+- The benchmark evaluates a static prototype catalog of 60 items across 11 categories and only six predefined queries.
+- Relevance labels were authored by the project team and partly encode the same domain assumptions used by the ranking rules.
+- Ground Truth was not independently reviewed, crowdsourced, or validated with real users, click logs, or production traffic.
+- Prices and specifications are fixed prototype data and may not reflect current listings.
+- Latency varies by device, browser, and individual run.
+- These results support regression testing within this collection; they are not system-wide accuracy claims and should not be generalized to real-world search without a larger, independently labeled test set.

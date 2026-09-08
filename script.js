@@ -74,7 +74,9 @@
 
     // Search
     searchForm: document.getElementById('searchForm'),
+    heroSearchSection: document.getElementById('heroSearchSection'),
     searchInput: document.getElementById('searchInput'),
+    searchValidation: document.getElementById('searchValidation'),
     searchClearBtn: document.getElementById('searchClearBtn'),
     searchSubmitBtn: document.getElementById('searchSubmitBtn'),
     promptChips: document.querySelectorAll('.prompt-chip'),
@@ -86,6 +88,8 @@
     viewSearch: document.getElementById('viewSearch'),
     viewCompare: document.getElementById('viewCompare'),
     viewBenchmark: document.getElementById('viewBenchmark'),
+    searchLanding: document.getElementById('searchLanding'),
+    searchResultsLayout: document.getElementById('searchResultsLayout'),
 
     // Query Understanding Card
     queryUnderstandingCard: document.getElementById('queryUnderstandingCard'),
@@ -191,16 +195,31 @@
   // ==========================================================================
   const VALID_VIEWS = new Set(['search', 'catalog', 'compare', 'how-it-works', 'algorithm', 'benchmark', 'about']);
 
+  function syncRoutePresentation() {
+    document.body.dataset.view = State.activeView;
+    document.body.classList.toggle('search-results-active', State.activeView === 'search' && State.hasSearched);
+  }
+
+  function setMobileMenu(open, restoreFocus = false) {
+    DOM.mainNav.classList.toggle('mobile-open', open);
+    DOM.mobileMenuBtn.setAttribute('aria-expanded', String(open));
+    DOM.mobileMenuBtn.setAttribute('aria-label', open ? 'ปิดเมนูมือถือ' : 'เปิดเมนูมือถือ');
+    if (!open && restoreFocus) DOM.mobileMenuBtn.focus();
+  }
+
   function renderRoute(viewName, isInitial = false) {
     const safeView = VALID_VIEWS.has(viewName) ? viewName : 'search';
     State.activeView = safeView;
+    syncRoutePresentation();
 
     // Update Nav Links
     DOM.navLinks.forEach(link => {
       if (link.dataset.view === safeView) {
         link.classList.add('active');
+        link.setAttribute('aria-current', 'page');
       } else {
         link.classList.remove('active');
+        link.removeAttribute('aria-current');
       }
     });
 
@@ -228,14 +247,13 @@
     } else if (safeView === 'catalog') {
       showCatalog();
     } else if (safeView === 'search' && !State.hasSearched) {
-      showCatalog();
+      showSearchLanding();
     }
 
     syncCompareDock();
 
     // Close mobile nav if open
-    DOM.mainNav.classList.remove('mobile-open');
-    DOM.mobileMenuBtn.setAttribute('aria-expanded', 'false');
+    setMobileMenu(false);
   }
 
   function navigateTo(viewName) {
@@ -270,9 +288,16 @@
 
     if (!query) {
       setProcessing(false);
-      showCatalog();
+      DOM.searchValidation.textContent = 'กรุณาระบุประเภทสินค้า การใช้งาน งบประมาณ หรือสเปกที่ต้องการ';
+      DOM.searchValidation.hidden = false;
+      DOM.searchInput.setAttribute('aria-invalid', 'true');
+      DOM.searchInput.focus();
       return;
     }
+
+    DOM.searchValidation.hidden = true;
+    DOM.searchValidation.textContent = '';
+    DOM.searchInput.removeAttribute('aria-invalid');
 
     setProcessing(true);
     State.searchTimer = window.setTimeout(() => {
@@ -281,6 +306,47 @@
       executeSearch(query, null, { resetSort: true, resetFilters: true });
       setProcessing(false);
     }, 180);
+  }
+
+  function setResultsSurfaceVisible(visible) {
+    DOM.resultsMetaBar.hidden = !visible;
+    DOM.searchResultsLayout.hidden = !visible;
+    if (!visible) DOM.activeFiltersSummary.hidden = true;
+  }
+
+  function setSortMode(mode) {
+    const catalogMode = mode === 'catalog';
+    [...DOM.sortSelect.options].forEach(option => {
+      option.disabled = catalogMode && ['match', 'spec', 'relevance'].includes(option.value);
+    });
+  }
+
+  function showSearchLanding() {
+    if (State.searchTimer) window.clearTimeout(State.searchTimer);
+    State.searchTimer = null;
+    State.searchRequestId += 1;
+    State.currentQuery = '';
+    State.parsedIntent = window.ISEQueryParser.getEmptyIntent('');
+    State.hasSearched = false;
+    State.activeCategory = '';
+    State.rawCandidates = [];
+    State.rankedResults = [];
+    State.displayedResults = [];
+    DOM.searchInput.value = '';
+    DOM.searchClearBtn.style.display = 'none';
+    DOM.searchValidation.hidden = true;
+    DOM.searchInput.removeAttribute('aria-invalid');
+    DOM.queryUnderstandingCard.style.display = 'none';
+    DOM.searchLanding.hidden = false;
+    DOM.productGrid.innerHTML = '';
+    DOM.emptyState.style.display = 'none';
+    setResultsSurfaceVisible(false);
+    setSortMode('search');
+    resetSort('match');
+    resetAllFilters(false);
+    setProcessing(false);
+    syncCategoryButtons();
+    syncRoutePresentation();
   }
 
   function showCatalog() {
@@ -295,7 +361,10 @@
     DOM.searchClearBtn.style.display = 'none';
     setProcessing(false);
     resetAllFilters(false);
-    resetSort();
+    setSortMode('catalog');
+    resetSort('price-asc');
+    DOM.searchLanding.hidden = true;
+    setResultsSurfaceVisible(true);
 
     const retrievalResult = State.retrievalEngine.retrieveCandidates(State.parsedIntent);
     State.rawCandidates = retrievalResult.candidates;
@@ -306,6 +375,7 @@
     DOM.resultsLatency.hidden = true;
     applyFiltersAndSort();
     syncCategoryButtons();
+    syncRoutePresentation();
   }
 
   // ==========================================================================
@@ -315,6 +385,10 @@
     const tStart = performance.now();
     State.currentQuery = queryText || '';
     State.hasSearched = Boolean(State.currentQuery || forcedCategory);
+    DOM.searchLanding.hidden = true;
+    setResultsSurfaceVisible(true);
+    setSortMode('search');
+    syncRoutePresentation();
 
     if (options.resetFilters) resetAllFilters(false);
     if (options.resetSort) resetSort();
@@ -328,6 +402,7 @@
       if (forcedCategory) {
         State.parsedIntent.category = forcedCategory;
         State.parsedIntent.isUnderstood = true;
+        State.parsedIntent.needsClarification = false;
         State.parsedIntent.confidence = {
           level: 'high', score: 100, recognizedSignals: ['category'], isUnderstood: true
         };
@@ -342,6 +417,12 @@
 
     if (State.currentQuery && !State.parsedIntent.isUnderstood) {
       renderUnknownQueryState();
+      if (State.activeView !== 'search') navigateTo('search');
+      return;
+    }
+
+    if (State.currentQuery && State.parsedIntent.needsClarification) {
+      renderAmbiguousQueryState();
       if (State.activeView !== 'search') navigateTo('search');
       return;
     }
@@ -367,21 +448,27 @@
     DOM.resultsLatency.hidden = false;
 
     // Switch view to search if currently elsewhere
-    if (State.activeView !== 'search' && State.activeView !== 'catalog') {
+    if (State.activeView !== 'search') {
       navigateTo('search');
     }
   }
 
   function syncCategoryButtons() {
-    DOM.catBtns.forEach(btn => btn.classList.toggle('active', btn.dataset.cat === State.activeCategory));
+    DOM.catBtns.forEach(btn => {
+      const selected = btn.dataset.cat === State.activeCategory;
+      btn.classList.toggle('active', selected);
+      btn.setAttribute('aria-pressed', String(selected));
+    });
   }
 
-  function resetSort() {
-    State.currentSort = 'match';
-    DOM.sortSelect.value = 'match';
+  function resetSort(value = 'match') {
+    State.currentSort = value;
+    DOM.sortSelect.value = value;
   }
 
   function renderUnknownQueryState() {
+    DOM.searchLanding.hidden = true;
+    setResultsSurfaceVisible(true);
     State.rawCandidates = [];
     State.rankedResults = [];
     State.displayedResults = [];
@@ -395,8 +482,13 @@
     DOM.mobileFilterTrigger.hidden = true;
     DOM.activeFiltersSummary.hidden = true;
     DOM.emptyState.style.display = 'block';
-    DOM.emptyStateTitle.textContent = 'เราไม่สามารถระบุความต้องการสินค้าไอทีจากคำค้นนี้ได้';
-    DOM.emptyStateDesc.textContent = 'ลองระบุประเภทสินค้า ลักษณะการใช้งาน งบประมาณ หรือสเปกที่ต้องการอย่างน้อยหนึ่งอย่าง';
+    const hasBudget = Boolean(State.parsedIntent && State.parsedIntent.budget && (State.parsedIntent.budget.min || State.parsedIntent.budget.max));
+    DOM.emptyStateTitle.textContent = hasBudget
+      ? 'พบงบประมาณแล้ว แต่ยังไม่ทราบว่าคุณกำลังมองหาสินค้าประเภทใด'
+      : 'เราไม่สามารถระบุความต้องการสินค้าไอทีจากคำค้นนี้ได้';
+    DOM.emptyStateDesc.textContent = hasBudget
+      ? 'ลองเพิ่มประเภทสินค้า ลักษณะการใช้งาน หรือสเปก เช่น “โน้ตบุ๊กทำงาน งบ 30000”'
+      : 'ลองระบุประเภทสินค้า ลักษณะการใช้งาน งบประมาณ หรือสเปกที่ต้องการอย่างน้อยหนึ่งอย่าง';
     const examples = [
       'โน้ตบุ๊กสำหรับเขียนโปรแกรม งบไม่เกิน 30000',
       'Gaming Laptop RTX 4060',
@@ -410,6 +502,46 @@
         DOM.searchInput.value = btn.dataset.exampleQuery;
         DOM.searchClearBtn.style.display = 'block';
         beginSearch(btn.dataset.exampleQuery);
+      });
+    });
+  }
+
+  function renderAmbiguousQueryState() {
+    DOM.searchLanding.hidden = true;
+    setResultsSurfaceVisible(true);
+    State.rawCandidates = [];
+    State.rankedResults = [];
+    State.displayedResults = [];
+    DOM.resultsCount.textContent = '0';
+    DOM.resultsMetaBar.classList.add('unknown-query');
+    DOM.resultsLatency.hidden = true;
+    DOM.queryUnderstandingCard.style.display = 'none';
+    DOM.productGrid.innerHTML = '';
+    DOM.productGrid.style.display = 'none';
+    DOM.filterSidebar.hidden = true;
+    DOM.mobileFilterTrigger.hidden = true;
+    DOM.activeFiltersSummary.hidden = true;
+    DOM.emptyState.style.display = 'block';
+    DOM.emptyStateTitle.textContent = `เข้าใจว่าต้องการสินค้าเพื่อ ${State.parsedIntent.useCase} แต่ยังไม่ทราบประเภทสินค้า`;
+    DOM.emptyStateDesc.textContent = 'เลือกประเภทสินค้าที่ต้องการ เพื่อให้ระบบค้นหาและจัดอันดับได้ตรงขึ้น';
+    const choices = State.parsedIntent.useCase === 'Gaming'
+      ? [
+          ['Gaming Laptop', 'Gaming Laptop'],
+          ['คอมพิวเตอร์ตั้งโต๊ะ', 'Desktop PC'],
+          ['การ์ดจอ', 'GPU'],
+          ['จอมอนิเตอร์', 'Monitor']
+        ]
+      : [
+          ['โน้ตบุ๊ก', 'Laptop'],
+          ['คอมพิวเตอร์ตั้งโต๊ะ', 'Desktop PC'],
+          ['จอมอนิเตอร์', 'Monitor']
+        ];
+    DOM.relaxSuggestions.innerHTML = choices.map(([label, category]) => `
+      <button type="button" class="relax-btn" data-clarify-category="${escapeHtml(category)}">${escapeHtml(label)}</button>
+    `).join('');
+    DOM.relaxSuggestions.querySelectorAll('[data-clarify-category]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        executeSearch(State.currentQuery, btn.dataset.clarifyCategory, { resetSort: true, resetFilters: true });
       });
     });
   }
@@ -589,7 +721,8 @@
 
       // Score color class
       const scoreClass = product.matchScore >= 85 ? 'high' : product.matchScore >= 70 ? 'mid' : 'fair';
-      const compactSpecs = getProductSpecRows(product, true).slice(0, 5);
+      const compactSpecs = getProductSpecRows(product, true).slice(0, 3);
+      const isPlaceholderImage = !product.image || product.image.includes('assets/placeholders/');
 
       html += `
         <article class="product-card ${isBestMatch ? 'best-match' : ''}" data-id="${product.id}">
@@ -605,7 +738,8 @@
           <!-- Media / Thumbnail -->
           <div class="card-media-col">
             <span class="card-brand-tag">${escapeHtml(product.brand)}</span>
-            <img src="${product.image || 'assets/placeholders/laptop.svg'}" alt="${escapeHtml(product.name)}" class="product-thumb" loading="lazy">
+            <img src="${product.image || 'assets/placeholders/laptop.svg'}" alt="${isPlaceholderImage ? '' : escapeHtml(product.name)}" class="product-thumb" loading="lazy">
+            ${isPlaceholderImage ? '<span class="card-image-note">ภาพประกอบ</span>' : ''}
           </div>
 
           <!-- Product Specifications & Information -->
@@ -615,13 +749,13 @@
 
             <!-- Specification Tags -->
             <div class="card-spec-tags">
-              ${compactSpecs.map((spec, specIndex) => `<span class="spec-tag ${specIndex < 2 ? 'highlight' : ''}">${escapeHtml(spec.compact || spec.value)}</span>`).join('')}
+              ${compactSpecs.map(spec => `<span class="spec-tag">${escapeHtml(spec.compact || spec.value)}</span>`).join('')}
             </div>
+          </div>
 
-            <!-- Explainable Ranking Signal ("Why This Result") -->
-            <div class="card-rationale">
-              <strong>${State.hasSearched ? 'ทำไมผลลัพธ์นี้ตรง:' : 'จุดเด่น:'}</strong> ${escapeHtml(explanation.summary)}
-            </div>
+          <!-- Explainable Ranking Signal ("Why This Result") -->
+          <div class="card-rationale">
+            <strong>${State.hasSearched ? 'ทำไมผลลัพธ์นี้ตรง:' : 'จุดเด่น:'}</strong> ${escapeHtml(explanation.summary)}
           </div>
 
           <!-- Scoring, Price & Action Column -->
@@ -640,7 +774,7 @@
 
             <div class="card-actions">
               <button type="button" class="btn-view-details" data-action="view-details" data-id="${product.id}">
-                ดูสเปกฉบับเต็ม
+                ดูรายละเอียด
               </button>
               <button type="button" class="btn-compare-toggle ${inCompare ? 'selected' : ''}" data-action="toggle-compare" data-id="${product.id}">
                 ${inCompare ? '✓ เลือกเปรียบเทียบแล้ว' : '+ เปรียบเทียบ'}
@@ -761,7 +895,7 @@
             <tr><th>ชื่อรุ่น</th><td>${escapeHtml(product.name)}</td></tr>
             <tr><th>แบรนด์</th><td>${escapeHtml(product.brand)}</td></tr>
             <tr><th>หมวดหมู่</th><td>${escapeHtml(product.category)}${product.subcategory ? ` (${escapeHtml(product.subcategory)})` : ''}</td></tr>
-            <tr><th>ราคาทางการ</th><td><strong>฿${product.price.toLocaleString()}</strong></td></tr>
+            <tr><th>ราคาในชุดข้อมูล</th><td><strong>฿${product.price.toLocaleString()}</strong></td></tr>
             ${getProductSpecRows(product).map(row => `<tr><th>${escapeHtml(row.label)}</th><td>${escapeHtml(row.value)}</td></tr>`).join('')}
           </tbody>
         </table>
@@ -805,19 +939,33 @@
   // ==========================================================================
   // 9. PRODUCT COMPARISON
   // ==========================================================================
+  function getCompareGroup(category) {
+    return category === 'Laptop' || category === 'Gaming Laptop' ? 'Laptop' : category;
+  }
+
   function toggleCompareProduct(productId) {
     const idx = State.compareList.indexOf(productId);
     if (idx >= 0) {
       State.compareList.splice(idx, 1);
     } else {
+      const candidate = State.products.find(product => product.id === productId);
+      const firstSelected = State.compareList.length > 0
+        ? State.products.find(product => product.id === State.compareList[0])
+        : null;
+      if (!candidate) return false;
+      if (firstSelected && getCompareGroup(firstSelected.category) !== getCompareGroup(candidate.category)) {
+        showToast(`กำลังเปรียบเทียบหมวด ${firstSelected.category} อยู่ กรุณาเริ่มชุดใหม่ก่อนเลือก ${candidate.category}`);
+        return false;
+      }
       if (State.compareList.length >= 3) {
         showToast('เปรียบเทียบได้สูงสุด 3 รายการ กรุณานำสินค้าเดิมออกก่อน');
-        return;
+        return false;
       }
       State.compareList.push(productId);
     }
 
     updateCompareUI();
+    return true;
   }
 
   function updateCompareUI() {
@@ -845,7 +993,7 @@
   }
 
   function syncCompareDock() {
-    const shouldShow = State.compareList.length > 0 && State.activeView !== 'compare';
+    const shouldShow = State.compareList.length > 0 && ['search', 'catalog'].includes(State.activeView);
     DOM.compareDock.hidden = !shouldShow;
 
     if (shouldShow) {
@@ -881,6 +1029,7 @@
 
     let html = `
       <table class="compare-table">
+        <caption class="sr-only">เปรียบเทียบราคา หมวดหมู่ และสเปกของสินค้าที่เลือก</caption>
         <thead>
           <tr>
             <th class="param-col">คุณสมบัติ / สินค้า</th>
@@ -1006,13 +1155,19 @@
     // Clear Search Input
     DOM.searchInput.addEventListener('input', () => {
       DOM.searchClearBtn.style.display = DOM.searchInput.value ? 'block' : 'none';
+      if (DOM.searchInput.value.trim()) {
+        DOM.searchValidation.hidden = true;
+        DOM.searchValidation.textContent = '';
+        DOM.searchInput.removeAttribute('aria-invalid');
+      }
     });
 
     DOM.searchClearBtn.addEventListener('click', () => {
       DOM.searchInput.value = '';
       DOM.searchClearBtn.style.display = 'none';
       DOM.searchInput.focus();
-      showCatalog();
+      if (State.activeView === 'catalog') showCatalog();
+      else showSearchLanding();
     });
 
     // Prompt Chips
@@ -1033,11 +1188,11 @@
       DOM.searchInput.value = '';
       DOM.searchClearBtn.style.display = 'none';
       if (!cat) {
-        showCatalog();
+        navigateTo('catalog');
       } else {
         executeSearch('', cat, { resetSort: true, resetFilters: true });
+        if (State.activeView !== 'search') navigateTo('search');
       }
-      if (State.activeView !== 'search') navigateTo('search');
     });
 
     // Navigation Links
@@ -1051,8 +1206,7 @@
 
     // Mobile Menu Toggle
     DOM.mobileMenuBtn.addEventListener('click', () => {
-      const isOpen = DOM.mainNav.classList.toggle('mobile-open');
-      DOM.mobileMenuBtn.setAttribute('aria-expanded', String(isOpen));
+      setMobileMenu(!DOM.mainNav.classList.contains('mobile-open'));
     });
 
     // Sort Dropdown
@@ -1145,8 +1299,7 @@
     });
     DOM.drawerCompareBtn.addEventListener('click', () => {
       const pId = DOM.drawerCompareBtn.dataset.id;
-      if (pId) toggleCompareProduct(pId);
-      closeProductDrawer();
+      if (pId && toggleCompareProduct(pId)) closeProductDrawer();
     });
 
     // Floating Compare Dock Actions
@@ -1183,9 +1336,17 @@
         closeProductDrawer();
       } else if (e.key === 'Escape' && DOM.filterSidebar.classList.contains('mobile-open')) {
         closeFilterDrawer();
+      } else if (e.key === 'Escape' && DOM.mainNav.classList.contains('mobile-open')) {
+        setMobileMenu(false, true);
       } else if (e.key === 'Tab' && DOM.drawerBackdrop.classList.contains('open')) {
         trapDrawerFocus(e);
+      } else if (e.key === 'Tab' && DOM.filterSidebar.classList.contains('mobile-open')) {
+        trapFocusWithin(DOM.filterSidebar, e);
       }
+    });
+
+    document.querySelector('.skip-link').addEventListener('click', () => {
+      window.requestAnimationFrame(() => document.getElementById('mainContent').focus());
     });
 
     window.addEventListener('hashchange', () => handleRouting(false));
@@ -1271,6 +1432,8 @@
 
   function openFilterDrawer() {
     DOM.filterSidebar.classList.add('mobile-open');
+    DOM.filterSidebar.setAttribute('role', 'dialog');
+    DOM.filterSidebar.setAttribute('aria-modal', 'true');
     DOM.filterOverlay.classList.add('visible');
     document.body.classList.add('filter-drawer-open');
     window.requestAnimationFrame(() => DOM.filterCloseBtn.focus());
@@ -1278,13 +1441,19 @@
 
   function closeFilterDrawer() {
     DOM.filterSidebar.classList.remove('mobile-open');
+    DOM.filterSidebar.removeAttribute('role');
+    DOM.filterSidebar.removeAttribute('aria-modal');
     DOM.filterOverlay.classList.remove('visible');
     document.body.classList.remove('filter-drawer-open');
     DOM.mobileFilterTrigger.focus();
   }
 
   function trapDrawerFocus(event) {
-    const focusable = [...DOM.productDrawer.querySelectorAll('button, a[href], input, select, [tabindex]:not([tabindex="-1"])')]
+    trapFocusWithin(DOM.productDrawer, event);
+  }
+
+  function trapFocusWithin(container, event) {
+    const focusable = [...container.querySelectorAll('button, a[href], input, select, [tabindex]:not([tabindex="-1"])')]
       .filter(element => !element.disabled && element.offsetParent !== null);
     if (focusable.length === 0) return;
     const first = focusable[0];
